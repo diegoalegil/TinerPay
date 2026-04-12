@@ -291,13 +291,11 @@
                 claves primarias (PK) y claves foráneas (FK).
             </p>
 
-            <p class="entities-intro reveal" style="margin-top: -1rem; font-style: italic; color: var(--text-muted, #aaa);">
-                El diseño se organiza en torno al usuario como entidad central. Cada usuario
-                puede tener varias wallets, y cada wallet opera en una divisa concreta.
-                Cuando un usuario envía dinero, el sistema crea una transacción que registra
-                la wallet de origen, la de destino, el importe y la fecha. De esta forma
-                se garantiza un historial completo y trazable de todas las operaciones.
-            </p>
+            <div class="entity-pills reveal">
+                <span class="entity-pill">👤 Usuario como entidad central</span>
+                <span class="entity-pill">💳 Cada wallet opera en una divisa</span>
+                <span class="entity-pill">🔁 Historial completo y trazable</span>
+            </div>
 
             <!-- ENTIDADES: grid de 4 columnas -->
             <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 1300px; margin: 3rem auto 0;">
@@ -308,6 +306,7 @@
                             <li><strong>id</strong> (PK · UUID)</li>
                             <li>name</li>
                             <li>email (UNIQUE)</li>
+                            <li>deleted_at (soft delete)</li>
                             <li>created_at</li>
                         </ul>
                     </div>
@@ -336,17 +335,18 @@
                         <h3><span class="entity-icon">🔁</span> Transaction</h3>
                         <ul>
                             <li><strong>id</strong> (PK · UUID)</li>
-                            <li>amount</li>
-                            <li>created_at</li>
                             <li>from_wallet (FK → wallets)</li>
                             <li>to_wallet (FK → wallets)</li>
+                            <li>amount</li>
+                            <li>created_at</li>
+                            <li>CHECK from ≠ to</li>
                         </ul>
                     </div>
 
             </div>
 
             <!-- RELACIONES: integradas en la misma sección -->
-            <h2 class="reveal" style="margin-top: 5rem;">Relaciones entre entidades</h2>
+            <h2 class="reveal" style="margin-top: 22rem;">Relaciones entre entidades</h2>
 
             <p class="entities-intro reveal">
                 Una vez identificadas las entidades, se definen las relaciones
@@ -400,69 +400,92 @@
 
     <section id="setup" class="setup-section">
 
-        <h2 class="setup-title reveal">
-            Inicialización y estructura de la base de datos
-        </h2>
+        <h2 class="setup-title reveal">Estructura de la base de datos</h2>
+        <p class="setup-subtitle reveal">Inicialización y definición de tablas en CockroachDB</p>
 
-        <div class="setup-grid">
+        <div class="setup-two-col">
 
-            <div class="setup-init">
-
-                <div class="setup-card reveal">
-                    <h3>Crear base de datos</h3>
-                    <pre>CREATE DATABASE tinerpay;</pre>
+            <!-- ── Terminal izquierdo: Inicialización ── -->
+            <div class="setup-terminal reveal">
+                <div class="setup-chrome">
+                    <div class="setup-dots">
+                        <span class="setup-dot sdot-red"></span>
+                        <span class="setup-dot sdot-yellow"></span>
+                        <span class="setup-dot sdot-green"></span>
+                    </div>
+                    <div class="setup-chrome-title">⚙️ Inicialización</div>
+                    <div class="setup-filename">init.sql</div>
                 </div>
+                <div class="setup-body">
+                    <p class="setup-desc">Crea la base de datos y la selecciona como contexto activo.</p>
+                    <pre>CREATE DATABASE tinerpay;
 
-                <div class="setup-card reveal">
-                    <h3>Usar base de datos</h3>
-                    <pre>USE tinerpay;</pre>
+USE tinerpay;</pre>
                 </div>
-
             </div>
 
-            <div class="setup-tables">
-
-                <div class="setup-card reveal">
-                    <h3>Users</h3>
-                    <pre>CREATE TABLE users (
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-name STRING NOT NULL,
-email STRING UNIQUE NOT NULL,
-created_at TIMESTAMP DEFAULT now()
-);</pre>
+            <!-- ── Terminal derecho: Tablas con pestañas ── -->
+            <div class="setup-terminal reveal">
+                <div class="setup-chrome">
+                    <div class="setup-dots">
+                        <span class="setup-dot sdot-red"></span>
+                        <span class="setup-dot sdot-yellow"></span>
+                        <span class="setup-dot sdot-green"></span>
+                    </div>
+                    <div class="setup-tabs">
+                        <button class="setup-tab active" data-stab="users">👤 Users</button>
+                        <button class="setup-tab" data-stab="currencies">💱 Currencies</button>
+                        <button class="setup-tab" data-stab="wallets">💳 Wallets</button>
+                        <button class="setup-tab" data-stab="transactions">🔁 Transactions</button>
+                    </div>
+                    <div class="setup-filename">schema.sql</div>
                 </div>
+                <div class="setup-body">
 
-                <div class="setup-card reveal">
-                    <h3>Currencies</h3>
-                    <pre>CREATE TABLE currencies (
-code STRING PRIMARY KEY,
-name STRING NOT NULL,
-symbol STRING NOT NULL
+                    <div class="setup-panel active" id="stab-users">
+                        <p class="setup-desc">Entidad central. Añadimos <code>deleted_at</code> para soft delete y mantener historial completo.</p>
+                        <pre>CREATE TABLE users (
+  id         UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
+  name       STRING    NOT NULL,
+  email      STRING    UNIQUE NOT NULL,
+  deleted_at TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT now()
 );</pre>
-                </div>
+                    </div>
 
-                <div class="setup-card reveal">
-                    <h3>Wallets</h3>
-                    <pre>CREATE TABLE wallets (
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-user_id UUID REFERENCES users(id),
-currency_code STRING REFERENCES currencies(code),
-balance DECIMAL NOT NULL DEFAULT 0 CHECK (balance >= 0),
-created_at TIMESTAMP DEFAULT now()
+                    <div class="setup-panel" id="stab-currencies">
+                        <p class="setup-desc">Catálogo de divisas. Referenciada por wallets para garantizar integridad referencial.</p>
+                        <pre>CREATE TABLE currencies (
+  code   STRING PRIMARY KEY,
+  name   STRING NOT NULL,
+  symbol STRING NOT NULL
 );</pre>
-                </div>
+                    </div>
 
-                <div class="setup-card reveal">
-                    <h3>Transactions</h3>
-                    <pre>CREATE TABLE transactions (
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-from_wallet UUID REFERENCES wallets(id),
-to_wallet UUID REFERENCES wallets(id),
-amount DECIMAL NOT NULL CHECK (amount > 0),
-created_at TIMESTAMP DEFAULT now()
+                    <div class="setup-panel" id="stab-wallets">
+                        <p class="setup-desc">Sin <code>ON DELETE CASCADE</code> — evitamos borrar wallets si se elimina un usuario.</p>
+                        <pre>CREATE TABLE wallets (
+  id            UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id       UUID      REFERENCES users(id),
+  currency_code STRING    REFERENCES currencies(code),
+  balance       DECIMAL   NOT NULL DEFAULT 0 CHECK (balance >= 0),
+  created_at    TIMESTAMP DEFAULT now()
 );</pre>
-                </div>
+                    </div>
 
+                    <div class="setup-panel" id="stab-transactions">
+                        <p class="setup-desc">Sin <code>CASCADE</code> en FK — el historial financiero no se borra bajo ningún concepto.</p>
+                        <pre>CREATE TABLE transactions (
+  id          UUID      PRIMARY KEY DEFAULT gen_random_uuid(),
+  from_wallet UUID      REFERENCES wallets(id),
+  to_wallet   UUID      REFERENCES wallets(id),
+  amount      DECIMAL   NOT NULL CHECK (amount > 0),
+  created_at  TIMESTAMP DEFAULT now(),
+  CHECK (from_wallet != to_wallet)
+);</pre>
+                    </div>
+
+                </div>
             </div>
 
         </div>
@@ -526,68 +549,75 @@ created_at TIMESTAMP DEFAULT now()
 
         <h2 class="crud-title reveal">Operaciones SQL</h2>
 
-        <div class="crud-grid">
+        <!-- TERMINAL CON PESTAÑAS -->
+        <div class="sql-terminal reveal">
 
-            <div class="crud-card reveal">
-                <h3>INSERT — Transferencia ACID</h3>
-                <pre>
-BEGIN;
+            <!-- Barra superior estilo editor -->
+            <div class="sql-chrome">
+                <div class="sql-dots">
+                    <span class="sql-dot dot-red"></span>
+                    <span class="sql-dot dot-yellow"></span>
+                    <span class="sql-dot dot-green"></span>
+                </div>
+                <div class="sql-tabs">
+                    <button class="sql-tab active" data-tab="insert">⚡ INSERT</button>
+                    <button class="sql-tab" data-tab="select">🔍 SELECT</button>
+                    <button class="sql-tab" data-tab="update">✏️ UPDATE</button>
+                    <button class="sql-tab" data-tab="delete">🗑️ DELETE</button>
+                </div>
+                <div class="sql-filename">tinerpay.sql</div>
+            </div>
+
+            <!-- Paneles de código -->
+            <div class="sql-body">
+
+                <div class="sql-panel active" id="sql-insert">
+                    <p class="sql-desc">Transferencia ACID — el saldo se valida directamente en la query para evitar saldos negativos.</p>
+                    <pre>BEGIN;
 
 UPDATE wallets
 SET balance = balance - 50
-WHERE id = 'wallet-origen';
+WHERE id = 'wallet-origen'
+AND balance >= 50;
 
 UPDATE wallets
 SET balance = balance + 50
 WHERE id = 'wallet-destino';
 
-INSERT INTO transactions
-(from_wallet, to_wallet, amount)
-VALUES
-('wallet-origen', 'wallet-destino', 50);
+INSERT INTO transactions (from_wallet, to_wallet, amount)
+VALUES ('wallet-origen', 'wallet-destino', 50);
 
-COMMIT;
-</pre>
-            </div>
+COMMIT;</pre>
+                </div>
 
-            <div class="crud-card reveal">
-                <h3>SELECT</h3>
-                <pre>
-SELECT w.balance, w.currency_code
+                <div class="sql-panel" id="sql-select">
+                    <p class="sql-desc">Filtro de usuarios activos — evita operar sobre cuentas eliminadas con soft delete.</p>
+                    <pre>SELECT w.balance, w.currency_code
 FROM wallets w
 JOIN users u ON w.user_id = u.id
-WHERE u.email = 'diego@gmail.com';
-</pre>
+WHERE u.email = 'diego@gmail.com'
+AND u.deleted_at IS NULL;</pre>
+                </div>
+
+                <div class="sql-panel" id="sql-update">
+                    <p class="sql-desc">JOIN con users en la propia query — solo actualiza wallets de usuarios activos.</p>
+                    <pre>UPDATE wallets w
+SET balance = balance + 100
+FROM users u
+WHERE w.user_id = u.id
+AND u.email = 'diego@gmail.com'
+AND u.deleted_at IS NULL;</pre>
+                </div>
+
+                <div class="sql-panel" id="sql-delete">
+                    <p class="sql-desc">Soft delete — marcamos deleted_at en lugar de borrar, preservando el historial financiero completo.</p>
+                    <pre>UPDATE users
+SET deleted_at = now()
+WHERE email = 'diego@gmail.com'
+AND deleted_at IS NULL;</pre>
+                </div>
+
             </div>
-
-            <div class="crud-card reveal">
-                <h3>UPDATE</h3>
-                <pre>
-UPDATE wallets
-SET balance = 100
-WHERE id = 'wallet_id';
-</pre>
-            </div>
-
-            <div class="crud-card reveal">
-                <h3>DELETE — Integridad referencial</h3>
-                <pre>
--- Primero eliminar dependencias
-DELETE FROM transactions
-WHERE from_wallet IN (
-    SELECT id FROM wallets
-    WHERE user_id = 'user-id'
-);
-
-DELETE FROM wallets
-WHERE user_id = 'user-id';
-
--- Ahora sí se puede borrar el usuario
-DELETE FROM users
-WHERE id = 'user-id';
-</pre>
-            </div>
-
         </div>
 
     </section>

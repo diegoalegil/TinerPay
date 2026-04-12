@@ -47,10 +47,16 @@ function createPacket(){
 
 /* ===== trail ===== */
 
-function trail(x,y){
+function trail(x,y,color){
 
 const t=document.createElement("div")
 t.className="packet-trail"
+
+if(color==="red"){
+    t.style.background="radial-gradient(circle,#ff3b3b 0%,rgba(255,59,59,.6) 40%,transparent 70%)"
+}else if(color==="green"){
+    t.style.background="radial-gradient(circle,#00ff88 0%,rgba(0,255,136,.6) 40%,transparent 70%)"
+}
 
 t.style.left=x+"px"
 t.style.top=y+"px"
@@ -63,7 +69,7 @@ setTimeout(()=>t.remove(),350)
 
 /* ===== movimiento paquete ===== */
 
-async function movePacket(packet,target){
+async function movePacket(packet,target,trailColor){
 
     let x,y
 
@@ -102,7 +108,7 @@ async function movePacket(packet,target){
             /* estela detrás */
 
             if(progress>0.02){
-                trail(prevX,prevY)
+                trail(prevX,prevY,trailColor)
             }
 
             prevX=px
@@ -133,11 +139,14 @@ ready(()=>{
     if(!sendBtn||!roach) return
 
     let running=false
+    let transferCount=0
 
     sendBtn.addEventListener("click",async e=>{
 
         if(running) return
         running=true
+        transferCount++
+        const isFail=(transferCount===3)
 
         e.preventDefault()
 
@@ -198,32 +207,147 @@ ready(()=>{
 
         await wait(700)
 
-        /* ===== replicación ===== */
+        /* ===== nodo US ===== */
 
         await movePacket(packet,nodeUS)
         pulseNode(nodeUS)
 
+        await wait(700)
+
+        /* ===== nodo LATAM ===== */
+
         await movePacket(packet,nodeLAT)
-        pulseNode(nodeLAT)
 
-        /* ===== desaparecer paquete ===== */
+        if(!isFail){
 
-        await wait(500)
-        packet.style.opacity=0
+            /* ─── ÉXITO ─── */
+            pulseNode(nodeLAT)
 
-        setTimeout(()=>packet.remove(),500)
+            await wait(500)
+            packet.style.opacity=0
+            setTimeout(()=>packet.remove(),500)
 
-        /* ===== cucaracha se va ===== */
+            await wait(600)
 
-        await wait(600)
+            roach.style.transition="left 1.6s ease"
+            roach.style.left="-300px"
 
-        roach.style.transition="left 1.6s ease"
-        roach.style.left="-300px"
+            running=false
 
-        running=false
+        }else{
 
+            /* ─── FALLO ÉPICO en nodo LATAM ─── */
+
+            /* 1. Parpadeo previo del nodo */
+            nodeLAT.classList.add("arch-node-flicker")
+            packet.classList.add("packet-error")
+
+            await wait(600)
+
+            nodeLAT.classList.remove("arch-node-flicker")
+            nodeLAT.classList.add("arch-node-error")
+
+            /* 2. Screen shake + flash */
+            document.body.classList.add("screen-shake-epic")
+            setTimeout(()=>document.body.classList.remove("screen-shake-epic"),700)
+
+            const flash=document.createElement("div")
+            flash.className="screen-flash"
+            document.body.appendChild(flash)
+            setTimeout(()=>flash.remove(),650)
+
+            const vignette=document.createElement("div")
+            vignette.className="red-alert"
+            document.body.appendChild(vignette)
+            setTimeout(()=>vignette.remove(),6000)
+
+            /* 3. Explosión épica en nodeLAT */
+            if(typeof crearExplosionEpica==="function") crearExplosionEpica(nodeLAT)
+            if(typeof crearDebris==="function") crearDebris(nodeLAT)
+
+            /* Ondas de choque */
+            ;[0,280,560].forEach(delay=>{
+                setTimeout(()=>{
+                    const wave=document.createElement("div")
+                    wave.className="shockwave"
+                    nodeLAT.appendChild(wave)
+                    setTimeout(()=>wave.remove(),950)
+                },delay)
+            })
+
+            /* EMP cian */
+            setTimeout(()=>{
+                const emp=document.createElement("div")
+                emp.className="shockwave-cyan"
+                nodeLAT.appendChild(emp)
+                setTimeout(()=>emp.remove(),1000)
+            },180)
+
+            await wait(400)
+
+            /* 4. Errores flotantes */
+            const errorLog=document.createElement("div")
+            errorLog.className="error-log-overlay"
+            errorLog.innerHTML=
+                "<div>❌ ERROR: Nodo LATAM no responde</div>"+
+                "<div>❌ ERROR: Commit timeout (5 000 ms)</div>"+
+                "<div>❌ ERROR: Quorum perdido — sin consenso</div>"+
+                "<div>⚠&nbsp;&nbsp;ALERT: Transacción comprometida</div>"+
+                "<div>⟳&nbsp;&nbsp;Iniciando ROLLBACK...</div>"
+            document.body.appendChild(errorLog)
+
+            await wait(1100)
+
+            /* 5. ROLLBACK en grande */
+            const rollbackOverlay=document.createElement("div")
+            rollbackOverlay.className="rollback-overlay"
+            rollbackOverlay.textContent="⟳ ROLLBACK"
+            document.body.appendChild(rollbackOverlay)
+
+            await wait(1800)
+
+            /* 6. Paquete regresa por el mismo camino */
+            await movePacket(packet,nodeUS,"red")
+            await wait(200)
+            await movePacket(packet,nodeEU,"red")
+            await wait(200)
+            await movePacket(packet,api,"red")
+            await wait(200)
+            await movePacket(packet,sendBtn,"red")
+
+            /* 7. Restaurar dinero */
+            packet.classList.remove("packet-error")
+            packet.classList.add("packet-rollback")
+            if(typeof window.doRollback==="function") window.doRollback()
+
+            await wait(700)
+
+            /* 8. Limpiar overlays */
+            rollbackOverlay.style.transition="opacity 0.8s ease"
+            rollbackOverlay.style.opacity="0"
+            errorLog.style.transition="opacity 0.8s ease"
+            errorLog.style.opacity="0"
+            setTimeout(()=>{rollbackOverlay.remove(); errorLog.remove()},800)
+
+            /* 9. Paquete desaparece en el botón */
+            packet.style.transition="opacity 0.4s ease"
+            packet.style.opacity="0"
+            setTimeout(()=>packet.remove(),400)
+
+            /* 10. Limpiar nodo */
+            setTimeout(()=>nodeLAT.classList.remove("arch-node-error"),1500)
+
+            /* 11. Cucaracha se retira */
+            await wait(1000)
+            roach.style.transition="left 1.6s ease"
+            roach.style.left="-300px"
+
+            /* 12. Resetear */
+            transferCount=0
+            running=false
+        }
     })
 
 })
 
-})()
+}())

@@ -733,3 +733,146 @@ animation:trailFade .35s linear forwards;
     transform: scale(.92);
     box-shadow: 0 0 15px #00eaff inset;
 }
+
+/* =========================
+   ARCH-PACKET (bolita viajera)
+========================= */
+
+.arch-packet {
+    position: fixed;
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle, #00eaff, #7b2bff);
+    border-radius: 50%;
+    box-shadow:
+        0 0 12px #00eaff,
+        0 0 25px #7b2bff;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.arch-packet.packet-error {
+    background: radial-gradient(circle, #ff6600, #ff0000) !important;
+    box-shadow:
+        0 0 15px #ff3b3b,
+        0 0 30px #ff0000 !important;
+    animation: packetErrorPulse 0.25s ease-in-out infinite alternate;
+}
+
+@keyframes packetErrorPulse {
+    from { transform: scale(1);   }
+    to   { transform: scale(1.7); }
+}
+
+.arch-packet.packet-rollback {
+    background: radial-gradient(circle, #00ff88, #00cc66) !important;
+    box-shadow:
+        0 0 15px #00ff88,
+        0 0 30px #00cc66 !important;
+    animation: none;
+}
+
+/* =========================
+   ARCH-NODE — estado de error
+========================= */
+
+.arch-node.arch-node-flicker {
+    animation: archNodeFlicker 0.6s ease-in-out forwards !important;
+    border-color: rgba(255,120,0,0.8) !important;
+}
+
+@keyframes archNodeFlicker {
+    0%   { opacity: 1;    filter: brightness(1);    }
+    15%  { opacity: 0.2;  filter: brightness(0.1);  }
+    30%  { opacity: 0.85; filter: brightness(0.75); }
+    50%  { opacity: 0.1;  filter: brightness(0.05); }
+    70%  { opacity: 0.7;  filter: brightness(0.5);  }
+    85%  { opacity: 0.15; filter: brightness(0.1);  }
+    100% { opacity: 0.05; filter: brightness(0);    }
+}
+
+.arch-node.arch-node-error {
+    border-color: #ff3b3b !important;
+    background: rgba(60, 0, 0, 0.85) !important;
+    box-shadow:
+        0 0 40px #ff0000,
+        0 0 80px rgba(255, 0, 0, 0.5),
+        inset 0 0 30px rgba(255, 0, 0, 0.3) !important;
+    animation: archNodeErrorPulse 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes archNodeErrorPulse {
+    from {
+        box-shadow:
+            0 0 30px #ff0000,
+            0 0 60px rgba(255,0,0,0.4),
+            inset 0 0 20px rgba(255,0,0,0.2);
+    }
+    to {
+        box-shadow:
+            0 0 60px #ff0000,
+            0 0 120px rgba(255,0,0,0.7),
+            inset 0 0 50px rgba(255,0,0,0.5);
+    }
+}
+
+/* =========================
+   ROLLBACK OVERLAY — texto enorme
+========================= */
+
+.rollback-overlay {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(56px, 9vw, 130px);
+    font-weight: 900;
+    color: #ff2222;
+    text-shadow:
+        0 0 25px #ff0000,
+        0 0 55px #ff0000,
+        0 0 100px rgba(255, 0, 0, 0.6),
+        0 0 200px rgba(255, 0, 0, 0.3);
+    letter-spacing: 8px;
+    white-space: nowrap;
+    z-index: 9999;
+    pointer-events: none;
+    animation: rollbackAppear 0.45s cubic-bezier(.17,.67,.3,1.4) forwards;
+}
+
+@keyframes rollbackAppear {
+    0%   { opacity: 0; transform: translate(-50%, -50%) scale(3) skewX(-6deg); }
+    60%  { opacity: 1; transform: translate(-50%, -50%) scale(0.92) skewX(1deg); }
+    100% { opacity: 1; transform: translate(-50%, -50%) scale(1) skewX(0deg); }
+}
+
+/* =========================
+   ERROR LOG OVERLAY — mensajes flotantes
+========================= */
+
+.error-log-overlay {
+    position: fixed;
+    top: 18%;
+    right: 4%;
+    background: rgba(0, 0, 0, 0.92);
+    border: 1px solid #ff3b3b;
+    border-radius: 10px;
+    padding: 18px 24px;
+    font-family: monospace;
+    font-size: clamp(11px, 1.3vw, 15px);
+    color: #ff3b3b;
+    line-height: 2.1;
+    z-index: 9998;
+    pointer-events: none;
+    text-shadow: 0 0 8px #ff0000;
+    box-shadow:
+        0 0 25px rgba(255, 0, 0, 0.4),
+        inset 0 0 15px rgba(255, 0, 0, 0.1);
+    animation: errorLogSlideIn 0.3s ease forwards;
+}
+
+@keyframes errorLogSlideIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to   { opacity: 1; transform: translateX(0);    }
+}

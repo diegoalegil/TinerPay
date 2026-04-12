@@ -6,150 +6,207 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 100px 6%;
+    padding: 90px 6% 100px;
 }
 
 
 /* TITULO */
 
 .setup-title {
-
     font-family: 'Orbitron', sans-serif;
-
-    font-size: 80px;
-
+    font-size: clamp(36px, 4.5vw, 62px);
     text-align: center;
-
     letter-spacing: 2px;
-
-    margin-bottom: 80px;
-
+    margin-bottom: 10px;
     background: linear-gradient(90deg, #00eaff, #7b2bff);
-
     -webkit-background-clip: text;
-
     color: transparent;
+    position: relative;
+}
 
-    text-shadow:
-        0 0 12px rgba(0, 234, 255, .4),
-        0 0 25px rgba(123, 43, 255, .4);
+.setup-title::after {
+    content: "";
+    display: block;
+    margin: 18px auto 0;
+    width: min(700px, 80%);
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent, #00eaff, #7b2bff, transparent);
+    box-shadow: 0 0 10px #00eaff, 0 0 25px #7b2bff;
+    animation: titlePulse 3s ease-in-out infinite;
+}
 
+.setup-subtitle {
+    font-size: 16px;
+    color: rgba(160, 185, 230, 0.6);
+    margin-bottom: 48px;
+    letter-spacing: 1px;
+    font-style: italic;
+    text-align: center;
 }
 
 
-/* GRID PRINCIPAL */
-.setup-grid {
-    display: grid;
-    grid-template-columns: 0.9fr 2fr;
-    gap: 40px;
+/* ===================================
+   TERMINAL CON PESTAÑAS
+=================================== */
+
+.setup-terminal {
     width: 100%;
-    max-width: 1300px;
-    /* antes 1600 */
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 234, 255, 0.45);
+    box-shadow:
+        0 0 50px rgba(0, 234, 255, 0.15),
+        0 0 100px rgba(123, 43, 255, 0.1);
+    background: #05050f;
+    text-align: left;
 }
 
+/* — Layout dos columnas — */
 
-/* =========================
-   COLUMNA IZQUIERDA
-   ========================= */
-
-.setup-init {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: 40px;
-
-}
-
-
-/* =========================
-   COLUMNA DERECHA
-   ========================= */
-
-.setup-tables {
-
+.setup-two-col {
     display: grid;
-
-    grid-template-columns: 1fr 1fr;
-
-    gap: 40px;
-
+    grid-template-columns: 1fr 1.8fr;
+    gap: 28px;
+    width: 100%;
+    max-width: 1100px;
+    align-items: start;
 }
 
+/* — Barra superior — */
 
-/* TARJETAS */
-.setup-card {
-    background: rgba(10, 5, 40, .45);
-    border: 1px solid rgba(255, 255, 255, .08);
-    border-radius: 18px;
-    padding: 24px;
-    /* antes 32px */
-    backdrop-filter: blur(12px);
-    animation: setupGlow 4s ease-in-out infinite;
+.setup-chrome {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 20px;
+    background: #0d0d20;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.2);
 }
 
+.setup-chrome-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    color: rgba(0, 234, 255, 0.6);
+    letter-spacing: 1px;
+}
 
-/* TITULO TARJETA */
-.setup-card h3 {
-    font-size: 20px;
-    margin-bottom: 12px;
+.setup-dots {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.setup-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    display: block;
+}
+
+.sdot-red    { background: #ff5f57; box-shadow: 0 0 6px #ff5f57; }
+.sdot-yellow { background: #febc2e; box-shadow: 0 0 6px #febc2e; }
+.sdot-green  { background: #28c840; box-shadow: 0 0 6px #28c840; }
+
+/* — Pestañas — */
+
+.setup-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.setup-tab {
+    padding: 6px 14px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: rgba(0, 234, 255, 0.4);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.setup-tab:hover {
+    background: rgba(0, 234, 255, 0.07);
+    color: rgba(0, 234, 255, 0.75);
+}
+
+.setup-tab.active {
+    background: linear-gradient(135deg,
+        rgba(0, 234, 255, 0.18),
+        rgba(123, 43, 255, 0.18));
     color: #00eaff;
+    border-color: rgba(0, 234, 255, 0.4);
+    box-shadow: 0 0 14px rgba(0, 234, 255, 0.25);
 }
 
-
-/* CODIGO SQL */
-.setup-card pre {
+.setup-filename {
     font-family: monospace;
-    font-size: 13px;
-    /* antes 15px */
-    line-height: 1.5;
-    color: #00eaff;
-    background: #0b0022;
-    padding: 14px;
-    border-radius: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.2);
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
+/* — Cuerpo — */
 
-/* GLOW SUAVE */
-
-@keyframes setupGlow {
-
-    0% {
-
-        box-shadow:
-            0 0 15px rgba(0, 234, 255, .25),
-            0 0 30px rgba(123, 43, 255, .2);
-
-    }
-
-    50% {
-
-        box-shadow:
-            0 0 35px rgba(0, 234, 255, .55),
-            0 0 70px rgba(123, 43, 255, .45);
-
-    }
-
-    100% {
-
-        box-shadow:
-            0 0 15px rgba(0, 234, 255, .25),
-            0 0 30px rgba(123, 43, 255, .2);
-
-    }
-
+.setup-body {
+    padding: 34px 44px 40px;
+    text-align: left;
 }
 
+/* — Paneles — */
 
-/* HOVER */
-
-.setup-card:hover {
-
-    transform: translateY(-6px) scale(1.02);
-
+.setup-panel {
+    display: none;
 }
 
-.setup-card pre{
+.setup-panel.active {
+    display: block;
+    animation: setupFadeIn 0.3s ease forwards;
+}
+
+@keyframes setupFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* — Descripción — */
+
+.setup-desc {
+    font-size: 14px;
+    color: rgba(160, 185, 230, 0.7);
+    margin: 0 0 22px 0;
+    padding: 0 0 0 14px;
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 3px solid rgba(0, 234, 255, 0.5);
+}
+
+.setup-desc code {
     font-family: 'JetBrains Mono', monospace;
+    color: #00eaff;
+    font-style: normal;
+    font-size: 13px;
+}
+
+/* — Código — */
+
+.setup-terminal pre {
+    margin: 0;
+    padding: 0;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #00ff88;
+    background: transparent;
+    border: none;
+    white-space: pre;
+    text-align: left;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
 }

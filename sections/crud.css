@@ -4,15 +4,13 @@
 
 .crud-section{
 
-    height:100vh;
-
     display:flex;
     flex-direction:column;
 
     align-items:center;
     justify-content:flex-start;
 
-    padding:50px 8% 40px 8%;
+    padding:70px 8% 100px 8%;
 
     text-align:center;
 
@@ -29,9 +27,9 @@
 
     font-family:'Orbitron',sans-serif;
 
-    font-size:56px;
+    font-size:clamp(42px, 5.5vw, 72px);
 
-    margin-bottom:24px;
+    margin-bottom:10px;
 
     letter-spacing:2px;
 
@@ -43,10 +41,20 @@
 
     color:transparent;
 
-    text-shadow:
-        0 0 12px rgba(0,234,255,.4),
-        0 0 25px rgba(123,43,255,.4);
+    position: relative;
 
+}
+
+.crud-title::after {
+    content: "";
+    display: block;
+    margin: 18px auto 24px;
+    width: min(600px, 80%);
+    height: 3px;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent, #00eaff, #7b2bff, transparent);
+    box-shadow: 0 0 10px #00eaff, 0 0 25px #7b2bff;
+    animation: titlePulse 3s ease-in-out infinite;
 }
 
 
@@ -202,4 +210,145 @@
 
     }
 
+}
+
+
+/* ===================================
+   SQL TERMINAL CON PESTAÑAS
+=================================== */
+
+#crud .sql-terminal {
+    width: 100%;
+    max-width: 860px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 234, 255, 0.45);
+    box-shadow:
+        0 0 50px rgba(0, 234, 255, 0.15),
+        0 0 100px rgba(123, 43, 255, 0.1);
+    background: #05050f;
+    text-align: left;
+}
+
+/* — Barra superior — */
+
+#crud .sql-chrome {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 13px 20px;
+    background: #0d0d20;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.2);
+}
+
+#crud .sql-dots {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#crud .sql-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+}
+
+#crud .dot-red    { background: #ff5f57; box-shadow: 0 0 6px #ff5f57; }
+#crud .dot-yellow { background: #febc2e; box-shadow: 0 0 6px #febc2e; }
+#crud .dot-green  { background: #28c840; box-shadow: 0 0 6px #28c840; }
+
+/* — Pestañas — */
+
+#crud .sql-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+#crud .sql-tab {
+    padding: 6px 16px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    background: transparent;
+    color: rgba(0, 234, 255, 0.4);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+#crud .sql-tab:hover {
+    background: rgba(0, 234, 255, 0.07);
+    color: rgba(0, 234, 255, 0.75);
+}
+
+#crud .sql-tab.active {
+    background: linear-gradient(135deg,
+        rgba(0, 234, 255, 0.18),
+        rgba(123, 43, 255, 0.18));
+    color: #00eaff;
+    border-color: rgba(0, 234, 255, 0.4);
+    box-shadow: 0 0 14px rgba(0, 234, 255, 0.25);
+}
+
+#crud .sql-filename {
+    font-family: monospace;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.2);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+/* — Cuerpo — */
+
+#crud .sql-body {
+    padding: 34px 44px 40px;
+    text-align: left;
+}
+
+/* — Paneles: ocultos por defecto — */
+
+#crud .sql-panel {
+    display: none;
+}
+
+#crud .sql-panel.active {
+    display: block;
+    animation: sqlFadeIn 0.3s ease forwards;
+}
+
+@keyframes sqlFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0);   }
+}
+
+/* — Descripción — */
+
+#crud .sql-desc {
+    font-size: 14px;
+    color: rgba(160, 185, 230, 0.7);
+    margin: 0 0 22px 0;
+    padding: 0 0 0 14px;
+    line-height: 1.6;
+    font-style: italic;
+    border-left: 3px solid rgba(0, 234, 255, 0.5);
+    background: none;
+}
+
+/* — Código — */
+
+#crud .sql-terminal pre {
+    margin: 0;
+    padding: 0;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #00ff88;
+    background: transparent;
+    border: none;
+    white-space: pre;
+    text-align: left;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.3);
 }

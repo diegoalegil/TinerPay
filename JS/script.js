@@ -868,18 +868,25 @@ document.querySelectorAll(".review-question").forEach(card => {
 
     if (!sendBtn || !balanceEl || !txList) return;
 
-    const destinatarios = ["Pedro", "María", "Carlos", "Ana", "Luis", "Sofía", "Miguel", "Laura"];
+    const destinatarios = ["Atteneri", "Grecia", "Jaime", "Sebastian", "Yasiel", "Iván"];
+
+    let archClickCount = 0;
 
     sendBtn.addEventListener("click", () => {
 
+        archClickCount++;
+        const isFail = (archClickCount === 3);
+
         // Parsear saldo actual (formato español: "120,00")
         const balance = parseFloat(balanceEl.textContent.replace(",", "."));
+        const balanceTextoOriginal = balanceEl.textContent; // guardamos antes de deducir
 
         const monto = Math.floor(Math.random() * 26) + 5; // 5 – 30 €
 
         if (balance < monto) {
             balanceEl.classList.add("balance-flash-red");
             setTimeout(() => balanceEl.classList.remove("balance-flash-red"), 800);
+            archClickCount--; // no cuenta como transferencia válida
             return;
         }
 
@@ -906,13 +913,97 @@ document.querySelectorAll(".review-question").forEach(card => {
                 `<div class="tx-title">Transferencia a ${nombre}</div>` +
                 `<div class="tx-date">Hoy · ${hhmm}</div>` +
             `</div>` +
-            `<div class="tx-amount">-${monto}€</div>`;
+            `<div class="tx-amount tx-amount-val">-${monto}€</div>`;
 
         // Insertar al principio de la lista
         txList.insertBefore(tx, txList.firstChild);
 
         setTimeout(() => tx.classList.remove("tx-new"), 500);
 
+        // Si es la 3ª transferencia, preparar el rollback
+        if (isFail) {
+            window.doRollback = function () {
+                // Restaurar saldo original
+                balanceEl.textContent = balanceTextoOriginal;
+                balanceEl.classList.add("balance-flash-green");
+                setTimeout(() => balanceEl.classList.remove("balance-flash-green"), 1200);
+
+                // Marcar la transacción como revertida
+                const txTitle = tx.querySelector(".tx-title");
+                const txAmt   = tx.querySelector(".tx-amount-val");
+                if (txTitle) txTitle.textContent = "⟳ Transferencia revertida";
+                if (txAmt)   txAmt.style.textDecoration = "line-through";
+                tx.style.transition = "opacity 0.5s ease";
+                tx.style.opacity    = "0.45";
+
+                // Resetear contador para que el ciclo se repita
+                archClickCount = 0;
+                window.doRollback = null;
+            };
+        }
+
     });
+
+}());
+
+/* ===== SQL Terminal — cambio de pestañas ===== */
+(function () {
+
+    function initSqlTabs() {
+        const tabs   = document.querySelectorAll(".sql-tab");
+        const panels = document.querySelectorAll(".sql-panel");
+
+        if (!tabs.length) return;
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const target = tab.dataset.tab;
+
+                tabs.forEach(t   => t.classList.remove("active"));
+                panels.forEach(p => p.classList.remove("active"));
+
+                tab.classList.add("active");
+                const panel = document.getElementById("sql-" + target);
+                if (panel) panel.classList.add("active");
+            });
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSqlTabs);
+    } else {
+        initSqlTabs();
+    }
+
+}());
+
+/* ===== Setup Terminal — pestañas de estructura ===== */
+(function () {
+
+    function initSetupTabs() {
+        const tabs   = document.querySelectorAll(".setup-tab");
+        const panels = document.querySelectorAll(".setup-panel");
+
+        if (!tabs.length) return;
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const target = tab.dataset.stab;
+
+                tabs.forEach(t   => t.classList.remove("active"));
+                panels.forEach(p => p.classList.remove("active"));
+
+                tab.classList.add("active");
+                const panel = document.getElementById("stab-" + target);
+                if (panel) panel.classList.add("active");
+            });
+        });
+    }
+
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initSetupTabs);
+    } else {
+        initSetupTabs();
+    }
 
 }());
