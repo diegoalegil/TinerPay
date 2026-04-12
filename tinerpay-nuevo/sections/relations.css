@@ -1,0 +1,379 @@
+/* sections/relations.css
+   Relaciones entre entidades — rediseño visual completo
+   - Cards anchas, iconos grandes, colores acento por card
+   - Conectores animados entre cards
+   - Glassmorphism intenso
+*/
+
+/* Contenedor sección (por si se usa) */
+.relations-section {
+  padding: 60px 6% 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfd8ff;
+}
+
+/* Contenedor interno */
+.relations-container {
+  max-width: 1400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Título — gradiente consistente */
+.relations-section h2 {
+  font-family: "Orbitron", sans-serif;
+  font-size: 68px;
+  background: linear-gradient(90deg, #00eaff, #7b2bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 18px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Línea decorativa del título */
+.relations-section h2::after {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 820px;
+  margin: 12px auto 0;
+  border-radius: 8px;
+  background: linear-gradient(90deg, transparent, #00eaff, #7b2bff, #00eaff, transparent);
+  filter: drop-shadow(0 0 12px rgba(0, 234, 255, .25));
+  animation: titlePulse 4s ease-in-out infinite;
+}
+
+@keyframes titlePulse {
+  0%, 100% {
+    opacity: .65;
+    transform: translateY(0);
+    width: 320px;
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-3px);
+    width: 820px;
+  }
+}
+
+/* Intro */
+.relations-intro {
+  max-width: 950px;
+  margin: 28px auto 60px;
+  line-height: 1.6;
+  font-size: 22px;
+  color: #cfd8ff;
+}
+
+/* =============================================
+   GRID — columna vertical de cards grandes
+   con conectores animados entre ellas
+   ============================================= */
+.relations-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;                   /* gap manejado por los conectores */
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 10px 10px 0;
+}
+
+/* =============================================
+   CONECTOR ANIMADO entre cards (excepto última)
+   ============================================= */
+.relation-card:not(:last-child)::after {
+  content: "";
+  display: block;
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 32px;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 234, 255, 0.55) 0%,
+    rgba(123, 43, 255, 0.55) 100%
+  );
+  border-radius: 2px;
+  animation: connectorPulse 2.4s ease-in-out infinite;
+  z-index: 3;
+}
+
+@keyframes connectorPulse {
+  0%, 100% { opacity: 0.45; height: 32px; }
+  50%       { opacity: 1;    height: 32px; box-shadow: 0 0 10px #00eaff, 0 0 22px #7b2bff; }
+}
+
+/* =============================================
+   CARD BASE — grande, impactante
+   ============================================= */
+.relation-card {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1100px;
+  background: rgba(8, 10, 38, 0.72);
+  border: 1px solid rgba(0, 234, 255, 0.22);
+  border-left: 5px solid rgba(0, 234, 255, 0.7);   /* acento izquierdo — override por card */
+  border-radius: 18px;
+  padding: 32px 44px;
+  margin-bottom: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  text-align: left;
+  gap: 0;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 234, 255, 0.07);
+  backdrop-filter: blur(14px);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.relation-card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 0 70px rgba(0, 234, 255, 0.2),
+    0 0 120px rgba(123, 43, 255, 0.12);
+}
+
+/* ─── Acentos de color únicos por card ─── */
+.relation-card:nth-child(1) {
+  border-left-color: #00eaff;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 234, 255, 0.09),
+    inset 4px 0 20px rgba(0, 234, 255, 0.04);
+}
+.relation-card:nth-child(1):hover {
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(0, 234, 255, 0.28),
+    inset 4px 0 30px rgba(0, 234, 255, 0.08);
+}
+
+.relation-card:nth-child(2) {
+  border-left-color: #7b2bff;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(123, 43, 255, 0.09),
+    inset 4px 0 20px rgba(123, 43, 255, 0.04);
+}
+.relation-card:nth-child(2):hover {
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(123, 43, 255, 0.28),
+    inset 4px 0 30px rgba(123, 43, 255, 0.08);
+}
+
+.relation-card:nth-child(3) {
+  border-left-color: #00ff88;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 40px rgba(0, 255, 136, 0.09),
+    inset 4px 0 20px rgba(0, 255, 136, 0.04);
+}
+.relation-card:nth-child(3):hover {
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.55),
+    0 0 80px rgba(0, 255, 136, 0.28),
+    inset 4px 0 30px rgba(0, 255, 136, 0.08);
+}
+
+/* ─── Izquierda: icono + entidades + flecha ─── */
+.relation-title {
+  flex-shrink: 0;
+  width: 340px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: "Orbitron", sans-serif;
+  color: #e9fbff;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  border-right: 1px solid rgba(0, 234, 255, 0.18);
+  padding-right: 36px;
+  margin-right: 36px;
+}
+
+/* Icono grande */
+.relation-icon {
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 58px;
+  height: 58px;
+  border-radius: 14px;
+  font-size: 28px;
+  background: linear-gradient(
+    145deg,
+    rgba(0, 234, 255, 0.12),
+    rgba(123, 43, 255, 0.07)
+  );
+  box-shadow:
+    0 0 16px rgba(0, 234, 255, 0.35),
+    0 0 34px rgba(123, 43, 255, 0.2);
+  color: #00eaff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.relation-card:nth-child(2) .relation-icon {
+  color: #b47aff;
+  box-shadow:
+    0 0 16px rgba(123, 43, 255, 0.4),
+    0 0 34px rgba(123, 43, 255, 0.25);
+}
+
+.relation-card:nth-child(3) .relation-icon {
+  color: #00ff88;
+  box-shadow:
+    0 0 16px rgba(0, 255, 136, 0.4),
+    0 0 34px rgba(0, 255, 136, 0.2);
+}
+
+.relation-card:hover .relation-icon {
+  transform: scale(1.15) rotate(-4deg);
+}
+
+/* Flecha animada */
+.relation-arrow {
+  margin: 0 8px;
+  font-size: 22px;
+  font-weight: 800;
+  color: #00eaff;
+  text-shadow:
+    0 0 8px #00eaff,
+    0 0 18px rgba(0, 234, 255, 0.7);
+  animation: arrowPulse 1.8s infinite;
+  flex-shrink: 0;
+}
+
+.relation-card:nth-child(2) .relation-arrow {
+  color: #b47aff;
+  text-shadow:
+    0 0 8px #7b2bff,
+    0 0 18px rgba(123, 43, 255, 0.7);
+}
+
+.relation-card:nth-child(3) .relation-arrow {
+  color: #00ff88;
+  text-shadow:
+    0 0 8px #00ff88,
+    0 0 18px rgba(0, 255, 136, 0.7);
+}
+
+@keyframes arrowPulse {
+  0%   { transform: translateX(0)   scale(1);    }
+  50%  { transform: translateX(5px) scale(1.12); }
+  100% { transform: translateX(0)   scale(1);    }
+}
+
+/* ─── Centro: descripción ─── */
+.relation-card p {
+  flex: 1;
+  margin: 0;
+  color: #cfd8ff;
+  font-size: 18px;
+  line-height: 1.7;
+}
+
+/* ─── Derecha: badge tipo relación ─── */
+.relation-type {
+  flex-shrink: 0;
+  margin: 0 0 0 32px;
+  align-self: center;
+  padding: 12px 26px;
+  border-radius: 999px;
+  font-family: "Orbitron", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  color: #eafcff;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 234, 255, 0.14),
+    rgba(123, 43, 255, 0.1)
+  );
+  border: 1px solid rgba(0, 234, 255, 0.22);
+  box-shadow:
+    0 0 14px rgba(0, 234, 255, 0.18),
+    inset 0 0 10px rgba(0, 234, 255, 0.04);
+  text-shadow: 0 0 10px rgba(0, 234, 255, 0.5);
+}
+
+.relation-card:nth-child(2) .relation-type {
+  background: linear-gradient(
+    135deg,
+    rgba(123, 43, 255, 0.14),
+    rgba(0, 234, 255, 0.07)
+  );
+  border-color: rgba(123, 43, 255, 0.3);
+  box-shadow:
+    0 0 14px rgba(123, 43, 255, 0.22),
+    inset 0 0 10px rgba(123, 43, 255, 0.05);
+  text-shadow: 0 0 10px rgba(123, 43, 255, 0.6);
+}
+
+.relation-card:nth-child(3) .relation-type {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 255, 136, 0.12),
+    rgba(0, 234, 255, 0.07)
+  );
+  border-color: rgba(0, 255, 136, 0.25);
+  box-shadow:
+    0 0 14px rgba(0, 255, 136, 0.2),
+    inset 0 0 10px rgba(0, 255, 136, 0.04);
+  text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+}
+
+/* Sin triángulo antiguo */
+.relation-card::before {
+  display: none;
+}
+
+/* Override reveal */
+.relation-card.reveal.visible {
+  transform: none;
+}
+
+.relation-card.reveal.visible:hover {
+  transform: translateY(-6px) scale(1.01);
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 1000px) {
+  .relation-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 28px 24px;
+    max-width: 600px;
+  }
+
+  .relation-title {
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(0, 234, 255, 0.18);
+    padding-right: 0;
+    padding-bottom: 18px;
+    margin-right: 0;
+    margin-bottom: 18px;
+    justify-content: center;
+  }
+
+  .relation-type {
+    margin: 16px 0 0;
+  }
+
+  .relation-card:not(:last-child)::after {
+    bottom: -32px;
+  }
+}

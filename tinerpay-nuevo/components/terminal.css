@@ -1,0 +1,55 @@
+.terminal{
+
+background:#0b0022;
+
+border-radius:14px;
+
+border:1px solid rgba(255,255,255,.08);
+
+padding:20px;
+
+font-family:monospace;
+
+color:var(--cyan);
+
+overflow:auto;
+
+}
+
+.resultado{
+
+background:#050012;
+
+border-radius:14px;
+
+padding:20px;
+
+font-family:monospace;
+
+color:var(--teal);
+
+}
+
+.terminal-header{
+
+display:flex;
+
+gap:8px;
+
+padding:10px 12px;
+
+background:#14003a;
+
+}
+
+.terminal-header span{
+
+width:10px;
+height:10px;
+border-radius:50%;
+
+}
+
+.terminal-header span:nth-child(1){background:#ff5f56;}
+.terminal-header span:nth-child(2){background:#ffbd2e;}
+.terminal-header span:nth-child(3){background:#27c93f;}

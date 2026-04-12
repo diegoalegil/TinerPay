@@ -1,0 +1,105 @@
+/* ================================
+   GRID / LAYOUT SYSTEM
+================================ */
+
+/* layout del problema */
+
+.problem-layout{
+
+    display:grid;
+
+    grid-template-columns:420px 620px 420px;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:60px;
+
+    margin-top:80px;
+
+}
+
+
+/* grid de requisitos */
+
+.req-grid{
+
+    margin-top:90px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:110px;
+
+    position:relative;
+
+}
+
+
+/* línea central */
+
+.req-grid::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:50%;
+    left:50%;
+
+    transform:translate(-50%,-50%);
+
+    width:75%;
+    height:2px;
+
+    background:linear-gradient(90deg,#00eaff,#7b2bff);
+
+    box-shadow:0 0 12px #00eaff;
+
+    z-index:0;
+
+}
+
+
+/* punto de datos animado */
+
+.req-grid::after{
+
+    content:"";
+
+    position:absolute;
+
+    top:calc(50% - 5px);
+    left:12%;
+
+    width:10px;
+    height:10px;
+
+    background:#00eaff;
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #7b2bff;
+
+    animation:reqDataMove 5s linear infinite;
+
+    z-index:0;
+
+}
+
+
+/* animación punto */
+
+@keyframes reqDataMove{
+
+    0%{ left:12%; }
+
+    100%{ left:88%; }
+
+}

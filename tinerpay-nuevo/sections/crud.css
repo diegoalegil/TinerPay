@@ -1,0 +1,205 @@
+/* =========================
+   CRUD SECTION
+========================= */
+
+.crud-section{
+
+    height:100vh;
+
+    display:flex;
+    flex-direction:column;
+
+    align-items:center;
+    justify-content:flex-start;
+
+    padding:50px 8% 40px 8%;
+
+    text-align:center;
+
+    box-sizing:border-box;
+
+}
+
+
+/* =========================
+   TITULO
+========================= */
+
+.crud-title{
+
+    font-family:'Orbitron',sans-serif;
+
+    font-size:56px;
+
+    margin-bottom:24px;
+
+    letter-spacing:2px;
+
+    flex-shrink:0;
+
+    background:linear-gradient(90deg,#00eaff,#7b2bff);
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+
+    text-shadow:
+        0 0 12px rgba(0,234,255,.4),
+        0 0 25px rgba(123,43,255,.4);
+
+}
+
+
+/* =========================
+   GRID PRINCIPAL
+========================= */
+
+#crud .crud-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:20px;
+
+    width:100%;
+    max-width:1500px;
+
+    flex:1;
+
+    align-self:stretch;
+
+    margin:0 auto;
+
+    min-height:0;
+
+}
+
+
+/* =========================
+   TARJETAS
+========================= */
+
+#crud .crud-card{
+
+    background:rgba(10,5,40,.45);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:18px;
+
+    backdrop-filter:blur(12px);
+
+    padding:20px 24px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:flex-start;
+
+    align-items:center;
+
+    text-align:center;
+
+    min-height:0;
+
+    overflow:hidden;
+
+    animation:crudGlow 4s ease-in-out infinite;
+
+    transition:.35s;
+
+}
+
+
+#crud .crud-card:hover{
+
+    transform:translateY(-4px) scale(1.01);
+
+}
+
+
+/* =========================
+   TITULO TARJETA
+========================= */
+
+.crud-card h3{
+
+    font-size:16px;
+
+    margin-bottom:12px;
+
+    color:#00eaff;
+
+    text-align:center;
+
+    flex-shrink:0;
+
+}
+
+
+/* =========================
+   SQL TERMINAL
+========================= */
+
+.crud-card pre{
+
+    font-family:'JetBrains Mono',monospace;
+
+    font-size:12px;
+
+    line-height:1.45;
+
+    background:#0b0022;
+
+    padding:12px 14px;
+
+    border-radius:10px;
+
+    color:#00eaff;
+
+    overflow:hidden;
+
+    width:100%;
+
+    text-align:left;
+
+    flex:1;
+
+    min-height:0;
+
+}
+
+
+/* =========================
+   GLOW ANIMATION
+========================= */
+
+@keyframes crudGlow{
+
+    0%{
+
+        box-shadow:
+        0 0 15px rgba(0,234,255,.25),
+        0 0 30px rgba(123,43,255,.2);
+
+    }
+
+    50%{
+
+        box-shadow:
+        0 0 35px rgba(0,234,255,.55),
+        0 0 70px rgba(123,43,255,.45);
+
+    }
+
+    100%{
+
+        box-shadow:
+        0 0 15px rgba(0,234,255,.25),
+        0 0 30px rgba(123,43,255,.2);
+
+    }
+
+}

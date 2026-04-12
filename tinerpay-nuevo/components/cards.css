@@ -1,0 +1,108 @@
+/* ================================
+   CARD COMPONENT
+================================ */
+
+.req-card{
+
+    width:340px;
+    height:360px;
+
+    padding:35px;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:space-between;
+    align-items:center;
+
+    text-align:center;
+
+    border-radius:18px;
+
+    background:rgba(10,5,40,0.45);
+
+    border:1px solid rgba(0,255,255,0.15);
+
+    backdrop-filter:blur(14px);
+
+    box-shadow:0 0 20px rgba(0,234,255,0.1);
+
+    transition:all .35s ease;
+
+    animation:cardBreath 4s ease-in-out infinite;
+
+    position:relative;
+    z-index:2;
+
+}
+
+
+.req-card:hover{
+
+    transform:translateY(-8px) scale(1.03);
+
+    box-shadow:
+        0 0 50px #00eaff,
+        0 0 100px #7b2bff;
+
+}
+
+
+.req-card h3{
+
+    font-size:26px;
+
+    margin-bottom:25px;
+
+    color:#00eaff;
+
+}
+
+
+/* LISTA */
+
+.req-card ul{
+
+    list-style:none;
+
+    line-height:2;
+
+    font-size:18px;
+
+    opacity:0.9;
+
+}
+
+.req-card li{
+    margin-bottom:8px;
+}
+
+
+/* ANIMACIÓN CARD — intensidad reducida, delays muy escalonados */
+
+@keyframes cardBreath{
+
+    0%{
+        box-shadow:
+        0 0 10px rgba(0,234,255,0.15),
+        0 0 20px rgba(123,43,255,0.08);
+    }
+
+    50%{
+        box-shadow:
+        0 0 24px rgba(0,234,255,0.32),
+        0 0 45px rgba(123,43,255,0.18);
+    }
+
+    100%{
+        box-shadow:
+        0 0 10px rgba(0,234,255,0.15),
+        0 0 20px rgba(123,43,255,0.08);
+    }
+
+}
+
+
+.req-card:nth-child(2){ animation-delay:1.4s; }
+.req-card:nth-child(3){ animation-delay:2.8s; }
+.req-card:nth-child(4){ animation-delay:4.2s; }

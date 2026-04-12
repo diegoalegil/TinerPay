@@ -1,0 +1,155 @@
+/* =========================
+   SECCION SETUP
+   ========================= */
+
+.setup-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 100px 6%;
+}
+
+
+/* TITULO */
+
+.setup-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 80px;
+
+    text-align: center;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 80px;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 12px rgba(0, 234, 255, .4),
+        0 0 25px rgba(123, 43, 255, .4);
+
+}
+
+
+/* GRID PRINCIPAL */
+.setup-grid {
+    display: grid;
+    grid-template-columns: 0.9fr 2fr;
+    gap: 40px;
+    width: 100%;
+    max-width: 1300px;
+    /* antes 1600 */
+}
+
+
+/* =========================
+   COLUMNA IZQUIERDA
+   ========================= */
+
+.setup-init {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 40px;
+
+}
+
+
+/* =========================
+   COLUMNA DERECHA
+   ========================= */
+
+.setup-tables {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 40px;
+
+}
+
+
+/* TARJETAS */
+.setup-card {
+    background: rgba(10, 5, 40, .45);
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 18px;
+    padding: 24px;
+    /* antes 32px */
+    backdrop-filter: blur(12px);
+    animation: setupGlow 4s ease-in-out infinite;
+}
+
+
+/* TITULO TARJETA */
+.setup-card h3 {
+    font-size: 20px;
+    margin-bottom: 12px;
+    color: #00eaff;
+}
+
+
+/* CODIGO SQL */
+.setup-card pre {
+    font-family: monospace;
+    font-size: 13px;
+    /* antes 15px */
+    line-height: 1.5;
+    color: #00eaff;
+    background: #0b0022;
+    padding: 14px;
+    border-radius: 10px;
+}
+
+
+/* GLOW SUAVE */
+
+@keyframes setupGlow {
+
+    0% {
+
+        box-shadow:
+            0 0 15px rgba(0, 234, 255, .25),
+            0 0 30px rgba(123, 43, 255, .2);
+
+    }
+
+    50% {
+
+        box-shadow:
+            0 0 35px rgba(0, 234, 255, .55),
+            0 0 70px rgba(123, 43, 255, .45);
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 15px rgba(0, 234, 255, .25),
+            0 0 30px rgba(123, 43, 255, .2);
+
+    }
+
+}
+
+
+/* HOVER */
+
+.setup-card:hover {
+
+    transform: translateY(-6px) scale(1.02);
+
+}
+
+.setup-card pre{
+    font-family: 'JetBrains Mono', monospace;
+}

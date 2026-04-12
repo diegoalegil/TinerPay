@@ -1,0 +1,305 @@
+/* contenedor relativo para posicionar las imágenes absolutas */
+.req-grid {
+    position: relative;
+    margin-top: 90px;
+    display: grid;
+    grid-template-columns: 340px 340px;
+    gap: 110px;
+    justify-content: center;
+}
+
+/* línea decorativa central (detrás) */
+.req-grid::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--cyan), var(--purple));
+    box-shadow: 0 0 12px var(--cyan);
+    z-index: 0;
+}
+
+/* contenedor de imagen (absoluto) */
+.req-img{
+    position:absolute;
+    width:380px;
+    top:50%;
+    transform:translateY(-50%);
+    opacity:.95;
+    pointer-events:none;
+    filter: drop-shadow(0 0 20px var(--cyan)) drop-shadow(0 0 40px var(--purple));
+    z-index:1;
+}
+
+.req-img img{
+    width:100%;
+    animation:reqFloat 8s ease-in-out infinite;
+}
+
+/* aura detrás de la imagen */
+.req-img::after {
+    content: "";
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 234, 255, .35), rgba(123, 43, 255, .25), transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+}
+
+/* posición izquierda/derecha (mirando al contenedor .req-img, no al img interno) */
+.req-grid .req-img:first-of-type {
+    left: -480px;
+}
+
+.req-grid .req-img:last-of-type {
+    right: -480px;
+}
+
+@keyframes reqFloat {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* TARJETAS: asegúrate que queden por encima de la línea */
+.req-card {
+    width: 340px;
+    grid-row: 1;
+    height: auto;
+    padding: 35px;
+    border-radius: 18px;
+    background: rgba(10, 5, 40, 0.45);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    z-index: 2;
+    position: relative;
+}
+
+/* TITULO CONTEXTO DEL PROBLEMA */
+
+#problema .req-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 72px;
+
+    margin-bottom: 80px;
+
+    letter-spacing: 2px;
+
+    text-align: center;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 10px rgba(0, 234, 255, .35),
+        0 0 25px rgba(123, 43, 255, .25);
+
+}
+
+#problema .req-title::after {
+
+    content: "";
+
+    display: block;
+
+    margin: 20px auto 0;
+
+    width: 680px;
+    height: 3px;
+
+    border-radius: 3px;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #7b2bff;
+
+    animation: problemLine 3s ease-in-out infinite;
+
+}
+
+@keyframes problemLine {
+
+    0% {
+        transform: scaleX(.7);
+        opacity: .7;
+    }
+
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(.7);
+        opacity: .7;
+    }
+
+}
+
+#cockroach .req-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 72px;
+
+    margin-bottom: 90px;
+
+    letter-spacing: 2px;
+
+    text-align: center;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 12px rgba(0, 234, 255, 0.4),
+        0 0 25px rgba(123, 43, 255, 0.4);
+
+    position: relative;
+
+}
+
+#cockroach .req-title::after {
+
+    content: "";
+
+    display: block;
+
+    margin: 20px auto 0;
+
+    width: 600px;
+
+    height: 3px;
+
+    border-radius: 3px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            transparent);
+
+    box-shadow:
+        0 0 12px #00eaff,
+        0 0 30px #7b2bff;
+
+    animation: cockroachLine 3s ease-in-out infinite;
+
+}
+
+@keyframes cockroachLine {
+
+    0% {
+        transform: scaleX(.6);
+        opacity: .6;
+    }
+
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(.6);
+        opacity: .6;
+    }
+
+}
+
+#requisitos .req-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 70px;
+
+    margin-bottom: 90px;
+
+    letter-spacing: 2px;
+
+    text-align: center;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 10px rgba(0, 234, 255, 0.5),
+        0 0 25px rgba(123, 43, 255, 0.4);
+
+    position: relative;
+
+}
+
+#requisitos .req-title::after {
+
+    content: "";
+
+    display: block;
+
+    margin: 20px auto 0;
+
+    width: 620px;
+
+    height: 4px;
+
+    border-radius: 4px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            transparent);
+
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #7b2bff;
+
+    animation: reqLinePulse 3s ease-in-out infinite;
+
+}
+
+@keyframes reqLinePulse {
+
+    0% {
+        transform: scaleX(.6);
+        opacity: .7;
+    }
+
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(.6);
+        opacity: .7;
+    }
+
+}

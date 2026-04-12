@@ -1,0 +1,84 @@
+.install-section{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+}
+
+.install-container{
+
+    display:grid;
+
+    grid-template-columns:1fr 1.2fr;
+
+    gap:100px;
+
+    align-items:center;
+
+    max-width:1400px;
+
+}
+
+.install-terminal{
+
+    width:100%;
+
+    max-width:650px;
+
+    min-height:320px;
+
+    background:#0b0022;
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    box-shadow:
+        0 0 25px rgba(0,234,255,.25),
+        0 0 70px rgba(123,43,255,.25);
+
+    overflow:hidden;
+
+}
+
+.install-terminal pre{
+
+    padding:40px;
+
+    font-size:18px;
+
+    color:#00eaff;
+
+    line-height:2;
+
+    min-height:300px;
+
+}
+
+.install-text h2{
+
+    font-family:'Orbitron',sans-serif;
+
+    font-size:64px;
+
+    margin-bottom:20px;
+
+    background:linear-gradient(90deg,#00eaff,#7b2bff);
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+
+}
+.install-text p{
+
+    font-size:20px;
+
+    line-height:1.7;
+
+    opacity:.9;
+
+}

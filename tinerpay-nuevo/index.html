@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <link rel="icon" href="img/favicon.ico">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TinerPay • Plataforma Distribuida de Pagos</title>
+
+    <!-- BASE -->
+    <link rel="stylesheet" href="base/reset.css">
+    <link rel="stylesheet" href="base/typography.css">
+    <link rel="stylesheet" href="base/global.css">
+
+    <!-- LAYOUT -->
+    <link rel="stylesheet" href="layout/grid.css">
+    <link rel="stylesheet" href="layout/sections.css">
+
+    <!-- COMPONENTS -->
+    <link rel="stylesheet" href="components/buttons.css">
+    <link rel="stylesheet" href="components/cards.css">
+    <link rel="stylesheet" href="components/terminal.css">
+    <link rel="stylesheet" href="components/cluster.css">
+
+    <!-- SECTIONS -->
+    <link rel="stylesheet" href="sections/hero.css">
+    <link rel="stylesheet" href="sections/flow.css">
+    <link rel="stylesheet" href="sections/requirements.css">
+    <link rel="stylesheet" href="sections/entities.css">
+    <link rel="stylesheet" href="sections/relations.css">
+    <link rel="stylesheet" href="sections/architecture.css">
+    <link rel="stylesheet" href="sections/architecture-demo.css">
+    <link rel="stylesheet" href="sections/bridge.css">
+    <link rel="stylesheet" href="sections/model.css">
+    <link rel="stylesheet" href="sections/install.css">
+    <link rel="stylesheet" href="sections/setup.css">
+    <link rel="stylesheet" href="sections/crud.css">
+    <link rel="stylesheet" href="sections/indexes.css">
+    <link rel="stylesheet" href="sections/demo.css">
+    <link rel="stylesheet" href="sections/requirements-review.css">
+
+</head>
+
+<body id="top">
+
+    <!-- ══════════════════════════════════════════════════════════
+         1. HERO
+    ══════════════════════════════════════════════════════════ -->
+
+    <header class="hero">
+
+        <div class="hero-text reveal">
+            <h1 class="reveal">TinerPay</h1>
+            <h2 class="reveal">Plataforma distribuida de pagos digitales</h2>
+            <p class="reveal">
+                Caso práctico de arquitectura distribuida utilizando CockroachDB
+                para garantizar consistencia, alta disponibilidad y escalabilidad.
+            </p>
+            <a href="#caso" class="start-btn reveal">Explorar proyecto ↓</a>
+        </div>
+
+        <div class="hero-logo reveal">
+            <img src="img/TinerPay.png">
+        </div>
+
+    </header>
+
+    <!-- ══════════════════════════════════════════════════════════
+         2. ¿QUÉ ES TINERPAY? — Descripción del caso (Punto 4)
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="caso" class="flow-section">
+
+        <div class="flow-header">
+
+            <div class="tinerpay-logo reveal">
+                <img src="img/TinerPay.png">
+            </div>
+
+            <div class="flow-title reveal">
+                <h2 class="reveal">¿Qué es TinerPay?</h2>
+                <p class="flow-desc reveal">
+                    TinerPay es una plataforma fintech que permite a los usuarios crear
+                    cuentas digitales y gestionar wallets en distintas divisas.
+                    Los usuarios pueden enviar y recibir dinero en tiempo real mediante
+                    transferencias seguras registradas en una base de datos distribuida.
+                    El sistema opera entre Europa y Latinoamérica, donde la consistencia
+                    de los datos y la disponibilidad continua son críticas.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="payment-flow">
+
+            <div class="flow-node reveal">
+                <div class="icon">👤</div>
+                <h3>Usuario</h3>
+                <p>Crea una cuenta</p>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-node reveal">
+                <div class="icon">💰</div>
+                <h3>Wallet</h3>
+                <p>Gestiona saldo</p>
+            </div>
+
+            <div class="flow-line"></div>
+
+            <div class="flow-node reveal">
+                <div class="icon">🔁</div>
+                <h3>Transferencia</h3>
+                <p>Envía dinero</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         3. LÍMITE DE LAS ARQUITECTURAS CENTRALIZADAS — Contexto (Punto 4)
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="centralized-limit" class="centralized-section">
+
+        <div class="centralized-container">
+
+            <div class="centralized-text">
+                <h2>El límite de las arquitecturas centralizadas</h2>
+                <p class="centralized-desc">
+                    TinerPay opera entre Europa y Latinoamérica con millones de transacciones
+                    financieras simultáneas. Una arquitectura centralizada no puede soportar esto.
+                </p>
+                <div class="centralized-warning">
+                    <strong>Punto único de fallo:</strong> si cae el servidor, cae toda la plataforma.<br><br>
+                    <strong>Cuello de botella:</strong> un solo servidor no escala con millones de operaciones simultáneas.<br><br>
+                    <strong>Latencia geográfica:</strong> un servidor en Europa responde lento para usuarios en Latinoamérica.
+                </div>
+            </div>
+
+            <div class="centralized-image">
+                <img src="img/centralized_problem.png" alt="Arquitectura centralizada">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         4. PUENTE + POR QUÉ COCKROACHDB — Justificación (Punto 4)
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="cockroach-bridge" class="bridge-section">
+
+        <h2 class="bridge-title">
+            La base de datos diseñada para el entorno transaccional distribuido
+        </h2>
+
+        <div class="bridge-container">
+
+            <div class="bridge-side left">
+                <h3>Exigencias críticas</h3>
+                <p class="tinerpay">(TinerPay)</p>
+            </div>
+
+            <div class="bridge-image">
+                <img src="img/cockroach_bridge.png" alt="CockroachDB bridge">
+                <div class="bridge-label">CockroachDB</div>
+            </div>
+
+            <div class="bridge-side right">
+                <h3>Integridad financiera</h3>
+            </div>
+
+            <div class="stream"></div>
+            <div class="stream-2"></div>
+
+        </div>
+
+        <p class="bridge-desc">
+            CockroachDB resuelve los tres problemas anteriores de forma nativa:
+            replica los datos entre nodos eliminando el punto único de fallo,
+            escala horizontalmente añadiendo nodos al cluster sin interrupciones,
+            y distribuye los datos por regiones reduciendo la latencia para usuarios
+            en Europa y Latinoamérica.
+        </p>
+
+    </section>
+
+    <section id="cockroach" class="req-section">
+
+        <h2 class="req-title reveal">Por qué CockroachDB</h2>
+
+        <div class="req-grid">
+
+            <div class="req-card reveal">
+                <h3>Consistencia fuerte</h3>
+                <p>Las transacciones financieras deben ejecutarse sin pérdida ni duplicación de datos.</p>
+                <img src="img/consistencia.png" class="platform-img">
+            </div>
+
+            <div class="req-card reveal">
+                <h3>Alta disponibilidad</h3>
+                <p>Los datos se replican automáticamente entre nodos del cluster.</p>
+                <img src="img/alta_disponibilidad.png" class="platform-img">
+            </div>
+
+            <div class="req-card reveal">
+                <h3>Escalabilidad horizontal</h3>
+                <p>Permite añadir nodos al cluster para soportar más usuarios.</p>
+                <img src="img/escalabilidad_horiozontal.png" class="platform-img">
+            </div>
+
+            <div class="req-card reveal">
+                <h3>Distribución multi-región</h3>
+                <p>Reduce la latencia para usuarios en diferentes regiones.</p>
+                <img src="img/multi-region.png" class="platform-img">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         5. ANÁLISIS DE REQUISITOS (Punto 5)
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="requisitos" class="req-section">
+
+        <h2 class="req-title reveal">Análisis de requisitos</h2>
+
+        <div class="req-grid">
+
+            <div class="req-img">
+                <img src="img/funcionales.png">
+            </div>
+
+            <div class="req-card reveal">
+                <h3>Funcionales</h3>
+                <ul>
+                    <li><strong>Crear:</strong> usuarios, wallets, transacciones, divisas</li>
+                    <li><strong>Consultar:</strong> saldo de una wallet, historial de transacciones, datos de usuario</li>
+                    <li><strong>Modificar:</strong> saldo de wallet, datos de usuario</li>
+                    <li><strong>Eliminar:</strong> transacciones, wallets, usuarios</li>
+                    <li><strong>Transferir:</strong> dinero entre wallets de distintos usuarios</li>
+                </ul>
+            </div>
+
+            <div class="req-card reveal">
+                <h3>No funcionales</h3>
+                <ul>
+                    <li>Alta disponibilidad 24/7</li>
+                    <li>Consistencia fuerte (ACID)</li>
+                    <li>Persistencia de datos</li>
+                    <li>Escalabilidad horizontal</li>
+                    <li>Baja latencia global</li>
+                    <li>Tolerancia a fallos de nodos</li>
+                </ul>
+            </div>
+
+            <div class="req-img">
+                <img src="img/nofuncionales.png">
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         6. MODELO DE DATOS + RELACIONES (Punto 6)
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="entities" class="entities-section">
+
+        <div class="entities-container">
+
+            <h2 class="reveal">Modelo de datos</h2>
+
+            <p class="entities-intro reveal">
+                El sistema utiliza un modelo relacional compatible con SQL.
+                A continuación se identifican las cuatro entidades principales con sus campos,
+                claves primarias (PK) y claves foráneas (FK).
+            </p>
+
+            <p class="entities-intro reveal" style="margin-top: -1rem; font-style: italic; color: var(--text-muted, #aaa);">
+                El diseño se organiza en torno al usuario como entidad central. Cada usuario
+                puede tener varias wallets, y cada wallet opera en una divisa concreta.
+                Cuando un usuario envía dinero, el sistema crea una transacción que registra
+                la wallet de origen, la de destino, el importe y la fecha. De esta forma
+                se garantiza un historial completo y trazable de todas las operaciones.
+            </p>
+
+            <!-- ENTIDADES: grid de 4 columnas -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 1300px; margin: 3rem auto 0;">
+
+                    <div class="entity-card reveal">
+                        <h3><span class="entity-icon">👤</span> Usuario</h3>
+                        <ul>
+                            <li><strong>id</strong> (PK · UUID)</li>
+                            <li>name</li>
+                            <li>email (UNIQUE)</li>
+                            <li>created_at</li>
+                        </ul>
+                    </div>
+
+                    <div class="entity-card reveal">
+                        <h3><span class="entity-icon">💱</span> Currency</h3>
+                        <ul>
+                            <li><strong>code</strong> (PK · STRING)</li>
+                            <li>name</li>
+                            <li>symbol</li>
+                        </ul>
+                    </div>
+
+                    <div class="entity-card reveal">
+                        <h3><span class="entity-icon">💳</span> Wallet</h3>
+                        <ul>
+                            <li><strong>id</strong> (PK · UUID)</li>
+                            <li>balance</li>
+                            <li>currency_code (FK → currencies)</li>
+                            <li>user_id (FK → users)</li>
+                            <li>created_at</li>
+                        </ul>
+                    </div>
+
+                    <div class="entity-card reveal">
+                        <h3><span class="entity-icon">🔁</span> Transaction</h3>
+                        <ul>
+                            <li><strong>id</strong> (PK · UUID)</li>
+                            <li>amount</li>
+                            <li>created_at</li>
+                            <li>from_wallet (FK → wallets)</li>
+                            <li>to_wallet (FK → wallets)</li>
+                        </ul>
+                    </div>
+
+            </div>
+
+            <!-- RELACIONES: integradas en la misma sección -->
+            <h2 class="reveal" style="margin-top: 5rem;">Relaciones entre entidades</h2>
+
+            <p class="entities-intro reveal">
+                Una vez identificadas las entidades, se definen las relaciones
+                entre ellas para construir el modelo relacional completo.
+            </p>
+
+            <div class="relations-grid" style="margin-top: 2rem;">
+
+                <div class="relation-card reveal">
+                    <h3 class="relation-title">
+                        <span class="relation-icon">👤</span>
+                        Usuario
+                        <span class="relation-arrow">→</span>
+                        Wallet
+                    </h3>
+                    <p>Un usuario puede poseer múltiples wallets dentro del sistema.</p>
+                    <span class="relation-type">1 : N</span>
+                </div>
+
+                <div class="relation-card reveal">
+                    <h3 class="relation-title">
+                        <span class="relation-icon">💱</span>
+                        Currency
+                        <span class="relation-arrow">→</span>
+                        Wallet
+                    </h3>
+                    <p>Una divisa puede estar asociada a múltiples wallets.</p>
+                    <span class="relation-type">1 : N</span>
+                </div>
+
+                <div class="relation-card reveal">
+                    <h3 class="relation-title">
+                        <span class="relation-icon">💳</span>
+                        Wallet
+                        <span class="relation-arrow">→</span>
+                        Transaction
+                    </h3>
+                    <p>Una wallet puede participar en múltiples transacciones como origen o destino.</p>
+                    <span class="relation-type">1 : N</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         INICIALIZACIÓN Y ESTRUCTURA SQL
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="setup" class="setup-section">
+
+        <h2 class="setup-title reveal">
+            Inicialización y estructura de la base de datos
+        </h2>
+
+        <div class="setup-grid">
+
+            <div class="setup-init">
+
+                <div class="setup-card reveal">
+                    <h3>Crear base de datos</h3>
+                    <pre>CREATE DATABASE tinerpay;</pre>
+                </div>
+
+                <div class="setup-card reveal">
+                    <h3>Usar base de datos</h3>
+                    <pre>USE tinerpay;</pre>
+                </div>
+
+            </div>
+
+            <div class="setup-tables">
+
+                <div class="setup-card reveal">
+                    <h3>Users</h3>
+                    <pre>CREATE TABLE users (
+id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+name STRING NOT NULL,
+email STRING UNIQUE NOT NULL,
+created_at TIMESTAMP DEFAULT now()
+);</pre>
+                </div>
+
+                <div class="setup-card reveal">
+                    <h3>Currencies</h3>
+                    <pre>CREATE TABLE currencies (
+code STRING PRIMARY KEY,
+name STRING NOT NULL,
+symbol STRING NOT NULL
+);</pre>
+                </div>
+
+                <div class="setup-card reveal">
+                    <h3>Wallets</h3>
+                    <pre>CREATE TABLE wallets (
+id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+user_id UUID REFERENCES users(id),
+currency_code STRING REFERENCES currencies(code),
+balance DECIMAL NOT NULL DEFAULT 0 CHECK (balance >= 0),
+created_at TIMESTAMP DEFAULT now()
+);</pre>
+                </div>
+
+                <div class="setup-card reveal">
+                    <h3>Transactions</h3>
+                    <pre>CREATE TABLE transactions (
+id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+from_wallet UUID REFERENCES wallets(id),
+to_wallet UUID REFERENCES wallets(id),
+amount DECIMAL NOT NULL CHECK (amount > 0),
+created_at TIMESTAMP DEFAULT now()
+);</pre>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         ÍNDICES BÁSICOS
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="indexes" class="indexes-section">
+
+        <h2 class="indexes-title reveal">Índices básicos</h2>
+
+        <p class="indexes-intro reveal">
+            Los índices aceleran las consultas más frecuentes del sistema.
+            Las claves primarias y el campo <code>email</code> (UNIQUE) ya tienen índice automático.
+            Los siguientes se crean explícitamente sobre las claves foráneas.
+        </p>
+
+        <div class="indexes-grid">
+
+            <div class="index-card reveal">
+                <h3>🔍 Wallets por usuario</h3>
+                <pre>CREATE INDEX ON wallets (user_id);</pre>
+                <p class="index-reason">Permite consultar todas las wallets de un usuario sin recorrer toda la tabla.</p>
+            </div>
+
+            <div class="index-card reveal">
+                <h3>🔍 Transacciones por wallet origen</h3>
+                <pre>CREATE INDEX ON transactions (from_wallet);</pre>
+                <p class="index-reason">Acelera la consulta del historial de envíos de una wallet concreta.</p>
+            </div>
+
+            <div class="index-card reveal">
+                <h3>🔍 Transacciones por wallet destino</h3>
+                <pre>CREATE INDEX ON transactions (to_wallet);</pre>
+                <p class="index-reason">Acelera la consulta del historial de recepciones de una wallet concreta.</p>
+            </div>
+
+            <div class="index-card reveal">
+                <h3>🔍 Wallets por divisa</h3>
+                <pre>CREATE INDEX ON wallets (currency_code);</pre>
+                <p class="index-reason">Útil para filtrar wallets en una divisa específica (EUR, USD, etc.).</p>
+            </div>
+
+        </div>
+
+        <p class="index-note reveal">
+            ℹ️ En CockroachDB los UUID como PK ya están indexados internamente.
+            Solo se crean índices adicionales sobre los campos de búsqueda frecuente.
+        </p>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         OPERACIONES SQL — CRUD
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="crud" class="crud-section">
+
+        <h2 class="crud-title reveal">Operaciones SQL</h2>
+
+        <div class="crud-grid">
+
+            <div class="crud-card reveal">
+                <h3>INSERT — Transferencia ACID</h3>
+                <pre>
+BEGIN;
+
+UPDATE wallets
+SET balance = balance - 50
+WHERE id = 'wallet-origen';
+
+UPDATE wallets
+SET balance = balance + 50
+WHERE id = 'wallet-destino';
+
+INSERT INTO transactions
+(from_wallet, to_wallet, amount)
+VALUES
+('wallet-origen', 'wallet-destino', 50);
+
+COMMIT;
+</pre>
+            </div>
+
+            <div class="crud-card reveal">
+                <h3>SELECT</h3>
+                <pre>
+SELECT w.balance, w.currency_code
+FROM wallets w
+JOIN users u ON w.user_id = u.id
+WHERE u.email = 'diego@gmail.com';
+</pre>
+            </div>
+
+            <div class="crud-card reveal">
+                <h3>UPDATE</h3>
+                <pre>
+UPDATE wallets
+SET balance = 100
+WHERE id = 'wallet_id';
+</pre>
+            </div>
+
+            <div class="crud-card reveal">
+                <h3>DELETE — Integridad referencial</h3>
+                <pre>
+-- Primero eliminar dependencias
+DELETE FROM transactions
+WHERE from_wallet IN (
+    SELECT id FROM wallets
+    WHERE user_id = 'user-id'
+);
+
+DELETE FROM wallets
+WHERE user_id = 'user-id';
+
+-- Ahora sí se puede borrar el usuario
+DELETE FROM users
+WHERE id = 'user-id';
+</pre>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         ARQUITECTURA DE TINERPAY
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="arquitectura" class="arquitectura">
+
+        <h2>Arquitectura de TinerPay</h2>
+
+        <div class="arquitectura-grid">
+
+            <div class="col phone-col">
+
+                <div class="iphone-wrap">
+
+                    <img src="img/iphone.png" class="iphone-frame">
+
+                    <div class="bank-app">
+
+                        <div class="bank-header">
+                            <div class="profile">TinerPay</div>
+                            <div class="icons">
+                                <span>📶</span>
+                                <span>⭐</span>
+                                <span>🔔</span>
+                            </div>
+                        </div>
+
+                        <div class="tabs">
+                            <span class="active">Cuentas</span>
+                            <span>Acciones</span>
+                        </div>
+
+                        <div class="currency">Euro</div>
+
+                        <div class="amount">
+                            <span id="bank-balance">120,00</span> €
+                        </div>
+
+                        <div class="actions">
+                            <button class="action-btn">Añadir</button>
+                            <button class="action-btn" id="arch-send-btn">Transferir</button>
+                        </div>
+
+                        <div class="transactions">
+
+                            <div class="tx">
+                                <div class="tx-left">
+                                    <div class="tx-title">Transferencia a Pedro</div>
+                                    <div class="tx-date">Hoy · 18:32</div>
+                                </div>
+                                <div class="tx-amount">-50€</div>
+                            </div>
+
+                            <div class="tx">
+                                <div class="tx-left">
+                                    <div class="tx-title">Pago Mamá</div>
+                                    <div class="tx-date">Ayer · 22:14</div>
+                                </div>
+                                <div class="tx-amount">-12€</div>
+                            </div>
+
+                            <div class="tx">
+                                <div class="tx-left">
+                                    <div class="tx-title">Ingreso Abuela</div>
+                                    <div class="tx-date">2 Feb</div>
+                                </div>
+                                <div class="tx-amount income">+120€</div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col api-col">
+
+                <div class="api-large" id="arch-api">
+                    <div class="api-label">API CORE</div>
+                    <h3>API Backend</h3>
+                    <ul>
+                        <li>👤 Usuarios</li>
+                        <li>💳 Wallets</li>
+                        <li>🔄 Transacciones</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="col cluster-col">
+
+                <div class="cluster-area">
+
+                    <svg class="cluster-lines" viewBox="0 0 520 480">
+                        <line x1="260" y1="60" x2="120" y2="380" class="line"></line>
+                        <line x1="260" y1="60" x2="400" y2="380" class="line"></line>
+                    </svg>
+
+                    <div class="arch-node node-top" id="arch-node1">Nodo EU</div>
+                    <div class="arch-node node-bl" id="arch-node2">Nodo US</div>
+                    <div class="arch-node node-br" id="arch-node3">Nodo LATAM</div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="arch-packet" class="arch-packet"></div>
+        <img id="roach" src="img/roach.png" class="roach">
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         7. REVISIÓN DE REQUISITOS
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="requirements-review" class="review-section">
+
+        <div class="review-container">
+
+            <h2 class="reveal">Preguntas frecuentes</h2>
+
+            <div class="review-diagram">
+
+                <!-- LÍNEAS DE CONEXIÓN -->
+                <svg class="review-lines" viewBox="0 0 1200 600">
+                    <line x1="600" y1="300" x2="600" y2="70" />
+                    <line x1="600" y1="300" x2="190" y2="110" />
+                    <line x1="600" y1="300" x2="1010" y2="110" />
+                    <line x1="600" y1="300" x2="140" y2="300" />
+                    <line x1="600" y1="300" x2="1060" y2="300" />
+                    <line x1="600" y1="300" x2="190" y2="490" />
+                    <line x1="600" y1="300" x2="1010" y2="490" />
+                    <line x1="600" y1="300" x2="600" y2="530" />
+                </svg>
+
+                <!-- NODO CENTRAL -->
+                <div class="review-center reveal">
+                    <img src="img/analysis.png" class="review-icon">
+                </div>
+
+                <!-- Q1: arriba centro -->
+                <div class="review-question q1 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Puede un usuario tener varias wallets?</p></div>
+                        <div class="flip-back"><p>Sí. Un usuario puede poseer múltiples wallets asociadas a su cuenta.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q2: arriba izquierda -->
+                <div class="review-question q2 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Qué significa ACID?</p></div>
+                        <div class="flip-back"><p>Atomicidad, Consistencia, Aislamiento y Durabilidad.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q3: arriba derecha -->
+                <div class="review-question q3 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Qué es CockroachDB?</p></div>
+                        <div class="flip-back"><p>Una base de datos SQL distribuida con transacciones ACID y alta disponibilidad.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q4: izquierda -->
+                <div class="review-question q4 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Qué pasa si falla un nodo del cluster?</p></div>
+                        <div class="flip-back"><p>Los otros nodos siguen operando. El sistema no cae gracias al consenso Raft.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q5: derecha -->
+                <div class="review-question q5 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Por qué se usa UUID como clave primaria?</p></div>
+                        <div class="flip-back"><p>Garantiza unicidad en un sistema distribuido sin riesgo de colisión entre nodos.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q6: abajo izquierda -->
+                <div class="review-question q6 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Qué hace el CHECK en la tabla wallets?</p></div>
+                        <div class="flip-back"><p>Garantiza que el balance nunca sea negativo.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q7: abajo derecha -->
+                <div class="review-question q7 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Por qué no puedes borrar un usuario directamente?</p></div>
+                        <div class="flip-back"><p>Las FKs de wallets y transacciones asociadas protegen la integridad referencial.</p></div>
+                    </div>
+                </div>
+
+                <!-- Q8: abajo centro -->
+                <div class="review-question q8 reveal">
+                    <div class="flip-inner">
+                        <div class="flip-front"><p>¿Qué es un índice y para qué sirve?</p></div>
+                        <div class="flip-back"><p>Acelera las consultas más frecuentes sin recorrer toda la tabla.</p></div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         11. INSTALACIÓN DEL CLUSTER
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="instalacion" class="install-section">
+
+        <div class="install-container">
+
+            <div class="install-text reveal">
+                <h2>Instalación del cluster</h2>
+                <p>El entorno se despliega utilizando Docker Compose.</p>
+            </div>
+
+            <div class="install-terminal reveal">
+                <div class="terminal-header">
+                    <span></span><span></span><span></span>
+                </div>
+                <pre id="install-typing"></pre>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
+         12. DEMO INTERACTIVA
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="demo-cluster">
+
+        <div class="demo-panel">
+
+            <h2 class="demo-title">Demo interactiva</h2>
+
+            <div class="demo-buttons">
+                <button onclick="crearUsuario()">Crear usuario</button>
+                <button onclick="agregarDinero()">Agregar dinero</button>
+                <button onclick="transferir()">Transferir</button>
+                <button onclick="verBalances()">Ver balances</button>
+            </div>
+
+            <div class="terminal">
+                <pre id="query"></pre>
+            </div>
+
+            <div class="resultado">
+                <pre id="resultado"></pre>
+            </div>
+
+        </div>
+
+        <div class="cluster-network">
+
+            <div class="cluster-node" id="node1">
+                <h3>Nodo 1</h3>
+                <div class="node-region" id="region-node1"></div>
+                <div class="node-latency" id="latency-node1"></div>
+                <div class="range r1">Range 1 • Follower</div>
+                <div class="range r2">Range 2 • Follower</div>
+                <div class="range r3 leader">Range 3 • Leader</div>
+                <div class="kv" id="kv1"></div>
+            </div>
+
+            <div class="cluster-node" id="node2">
+                <h3>Nodo 2</h3>
+                <div class="node-region" id="region-node2"></div>
+                <div class="node-latency" id="latency-node2"></div>
+                <div class="range r1 leader">Range 1 • Leader</div>
+                <div class="range r2">Range 2 • Follower</div>
+                <div class="range r3">Range 3 • Follower</div>
+                <div class="kv" id="kv2"></div>
+            </div>
+
+            <div class="cluster-node" id="node3">
+                <h3>Nodo 3</h3>
+                <div class="node-region" id="region-node3"></div>
+                <div class="node-latency" id="latency-node3"></div>
+                <div class="range r1">Range 1 • Follower</div>
+                <div class="range r2 leader">Range 2 • Leader</div>
+                <div class="range r3">Range 3 • Follower</div>
+                <div class="kv" id="kv3"></div>
+            </div>
+
+        </div>
+
+        <div class="nuclear-container">
+
+            <div id="safety-cover" class="safety-cover" onclick="abrirTapa()">
+                <div class="warning-stripes"></div>
+            </div>
+
+            <button id="nuclear-button" class="nuclear-button" onclick="fallarNodo()" disabled>
+                SIMULAR<br>FALLO
+            </button>
+
+        </div>
+
+        <div class="log-row">
+
+            <div class="log-panel">
+
+                <div class="raft-log">
+                    <div class="log-title">Cluster Event Log</div>
+                    <div id="raft-log-content"></div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <script src="JS/arquitectura.js"></script>
+        <script src="JS/script.js"></script>
+
+    </section>
+
+</body>
+
+</html>

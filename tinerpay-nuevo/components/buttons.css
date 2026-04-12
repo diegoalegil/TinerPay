@@ -1,0 +1,47 @@
+/* ================================
+   BUTTON COMPONENT
+================================ */
+
+.start-btn{
+
+    display:inline-block;
+
+    margin-top:10px;
+
+    padding:20px 44px;
+
+    border-radius:10px;
+
+    font-size:18px;
+
+    background:linear-gradient(90deg,#00c8ff,#7b2bff);
+
+    color:white;
+
+    font-weight:600;
+
+    letter-spacing:1px;
+
+    text-decoration:none;
+
+    border:1px solid rgba(255,255,255,.15);
+
+    box-shadow:
+        0 0 10px #00c8ff,
+        0 0 20px #7b2bff;
+
+    transition:all .35s ease;
+
+    cursor:pointer;
+
+}
+
+.start-btn:hover{
+
+    transform:translateY(-3px) scale(1.03);
+
+    box-shadow:
+        0 0 20px #00c8ff,
+        0 0 40px #7b2bff;
+
+}

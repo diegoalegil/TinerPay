@@ -1,0 +1,202 @@
+/* =========================
+   SYSTEM REQUIREMENTS
+========================= */
+
+.requirements-system {
+
+    min-height: 100vh;
+    padding: 100px 8% 140px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.requirements-container {
+
+    max-width: 1400px;
+    text-align: center;
+
+}
+
+/* =========================
+   TITULO
+========================= */
+
+.requirements-system h2 {
+
+    font-family: "Orbitron", sans-serif;
+
+    font-size: 64px;
+
+    color: #00eaff;
+
+    position: relative;
+    display: inline-block;
+
+    margin-bottom: 40px;
+
+    text-shadow:
+        0 0 12px rgba(0,234,255,.9),
+        0 0 40px rgba(0,234,255,.4),
+        0 0 80px rgba(123,43,255,.2);
+
+}
+
+/* LINEA ANIMADA */
+
+.requirements-system h2::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: -18px;
+
+    transform: translateX(-50%);
+
+    height: 4px;
+
+    width: 260px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        #00eaff,
+        #7b2bff,
+        #00eaff,
+        transparent
+    );
+
+    border-radius: 10px;
+
+    animation: lineExpand 4s infinite ease-in-out;
+
+}
+
+@keyframes lineExpand {
+
+    0% {
+
+        width: 220px;
+        opacity: .6;
+
+    }
+
+    50% {
+
+        width: 520px;
+        opacity: 1;
+
+    }
+
+    100% {
+
+        width: 220px;
+        opacity: .6;
+
+    }
+
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.requirements-intro {
+
+    font-size: 22px;
+
+    color: #cfd8ff;
+
+    max-width: 900px;
+
+    margin: auto;
+
+    line-height: 1.7;
+
+    margin-bottom: 40px;
+
+}
+
+/* =========================
+   GRID
+========================= */
+
+.requirements-grid {
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 75px;
+
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.requirement-card {
+
+    background: rgba(10,15,40,.7);
+
+    padding: 60px 50px;
+
+    border-radius: 20px;
+
+    backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(0,234,255,.45);
+
+    box-shadow:
+        0 0 25px rgba(0,234,255,.25),
+        0 0 60px rgba(0,234,255,.12);
+
+    min-height: 200px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+}
+
+/* ICONO */
+
+.requirement-card .icon {
+
+    font-size: 40px;
+
+    margin-bottom: 14px;
+
+    filter: drop-shadow(0 0 14px rgba(0,234,255,.9));
+
+}
+
+/* TITULO CARD */
+
+.requirement-card h3 {
+
+    font-family: "Orbitron", sans-serif;
+
+    font-size: 28px;
+
+    color: #00eaff;
+
+    margin-bottom: 12px;
+
+}
+
+/* TEXTO */
+
+.requirement-card p {
+
+    font-size: 18px;
+
+    color: #cfd8ff;
+
+    line-height: 1.7;
+
+}

@@ -1,0 +1,916 @@
+/* =========================
+   THEME VARIABLES (ajusta aquí)
+   ========================= */
+:root {
+    --bg-dark: #060610;
+    --cyan: #00eaff;
+    --purple: #7b2bff;
+    --text-soft: #cfd8ff;
+    --glass-border: rgba(255, 255, 255, 0.04);
+
+    --bridge-width: 1500px;
+    --pillar-x: 240px;
+    --bridge-lift: -80px;
+}
+
+/* =========================
+   SECCION - layout padre
+   ========================= */
+.bridge-section {
+    transform: scale(.90);
+    transform-origin: top center;
+    position: relative;
+    padding: 20px 30px 120px;
+    text-align: center;
+    color: var(--text-soft);
+    overflow: visible;
+    background: radial-gradient(circle at 20% 10%, rgba(0, 234, 255, 0.02), transparent 8%),
+        radial-gradient(circle at 90% 80%, rgba(123, 43, 255, 0.02), transparent 6%);
+}
+
+/* ===== titulo grande ===== */
+.bridge-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(32px, 4.5vw, 64px);
+
+    margin-bottom: 40px;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+
+    -webkit-background-clip: text;
+
+    color: transparent;
+
+    text-shadow:
+        0 0 12px rgba(0, 234, 255, .6),
+        0 0 30px rgba(123, 43, 255, .35);
+
+    position: relative;
+
+}
+
+/* línea futurista debajo */
+
+.bridge-title::after {
+
+    content: "";
+
+    display: block;
+
+    margin: 22px auto 0;
+
+    width: 820px;
+
+    height: 3px;
+
+    border-radius: 3px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            transparent);
+
+    box-shadow:
+        0 0 10px #00eaff,
+        0 0 25px #7b2bff;
+
+    animation: titlePulse 3s ease-in-out infinite;
+
+}
+
+@keyframes titlePulse {
+
+    0% {
+        transform: scaleX(.6);
+        opacity: .6;
+    }
+
+    50% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scaleX(.6);
+        opacity: .6;
+    }
+
+}
+
+/* =========================
+   CONTENEDOR (referencia para absolutes)
+   ========================= */
+.bridge-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-bottom: 12px;
+}
+
+/* =========================
+   PUENTE (imagen) - centrado y "lifted"
+   ========================= */
+.bridge-image {
+    position: relative;
+    display: block;
+    margin: 0 auto;
+    transform: translateY(var(--bridge-lift));
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* Imagen responsiva con control via variable */
+.bridge-image img {
+    display: block;
+    width: var(--bridge-width);
+    max-width: 92vw;
+    height: auto;
+}
+
+/* efecto flotante opcional (pon .animated en .bridge-image) */
+.bridge-image.animated img {
+    animation: bridgeFloat 9s ease-in-out infinite;
+}
+
+@keyframes bridgeFloat {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+/* aura suave detras del puente */
+.bridge-image::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 560px;
+    height: 320px;
+    background: radial-gradient(circle, rgba(0, 234, 255, 0.12), rgba(123, 43, 255, 0.06), transparent 60%);
+    filter: blur(28px) saturate(110%);
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* linea decorativa en la base del puente (detrás) */
+.bridge-container::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 128px);
+    transform: translateX(-50%);
+    width: 82%;
+    height: 6px;
+    background: linear-gradient(90deg, rgba(0, 234, 255, 0.15), rgba(123, 43, 255, 0.12));
+    box-shadow: 0 0 18px rgba(0, 234, 255, 0.06), 0 0 30px rgba(123, 43, 255, 0.04);
+    z-index: 6;
+    border-radius: 6px;
+    opacity: .95;
+}
+
+/* =========================
+   ETIQUETA CENTRAL (CockroachDB) - dentro del arco
+   ========================= */
+.bridge-label {
+    position: absolute;
+
+    left: 18%;
+    top: 55%;
+
+    transform: translate(-50%, -50%);
+
+    font-family: 'Orbitron', sans-serif;
+    font-size: 120px;
+
+    letter-spacing: 1.5px;
+
+    color: #e8fbff;
+
+    text-shadow:
+        0 0 10px #00eaff,
+        0 0 25px rgba(123, 43, 255, .5),
+        0 0 40px rgba(0, 234, 255, .4);
+
+    z-index: 40;
+}
+
+@keyframes labelPulse {
+    0% {
+        text-shadow: 0 0 6px rgba(0, 234, 255, .7), 0 0 18px rgba(123, 43, 255, .25);
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        text-shadow: 0 0 14px rgba(0, 234, 255, 1), 0 0 30px rgba(123, 43, 255, .5);
+        transform: translate(-50%, -52%) scale(1.02);
+    }
+
+    100% {
+        text-shadow: 0 0 6px rgba(0, 234, 255, .7), 0 0 18px rgba(123, 43, 255, .25);
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* =========================
+   TEXTOS SOBRE PILARES (PRECISOS)
+   - posicion calculada respecto al centro y al ancho del PNG
+   - ajusta --bridge-width y --pillar-x si hace falta
+   ========================= */
+.bridge-side {
+    position: absolute;
+    top: 10%;
+    max-width: 260px;
+    z-index: 50;
+    text-align: center;
+}
+
+/* pilar izquierdo */
+.bridge-side.left {
+    left: 88%;
+}
+
+/* pilar derecho */
+.bridge-side.right {
+    right: 85%;
+}
+
+
+
+/* estilo del texto lateral (holograma) */
+.bridge-side h3 {
+    font-size: 28px;
+    margin: 0;
+    color: var(--cyan);
+    line-height: 1.02;
+    text-shadow:
+        0 0 12px rgba(0, 234, 255, .55),
+        0 0 22px rgba(123, 43, 255, .25);
+    transform: translateY(0);
+    transition: transform .2s ease;
+}
+
+.bridge-side p {
+    margin: 6px 0 0;
+    font-size: 15px;
+    color: var(--cyan);
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(0, 234, 255, .45);
+}
+
+/* hover suave: sube el texto (no activo en móviles) */
+@media (hover: hover) {
+    .bridge-side:hover h3 {
+        transform: translateY(-6px);
+    }
+}
+
+/* =========================
+   DESCRIPCION INFERIOR
+   ========================= */
+/* =========================
+   DESCRIPCION INFERIOR - CARD
+========================= */
+
+.bridge-desc {
+
+    margin: 40px auto 0;
+
+    max-width: min(1100px, 82%);
+
+    padding: 28px 36px;
+
+    font-size: 20px;
+
+    line-height: 1.7;
+
+    color: #e6faff;
+
+    text-align: center;
+
+    background: linear-gradient(180deg,
+            rgba(0, 234, 255, .06),
+            rgba(123, 43, 255, .05));
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(0, 234, 255, .35);
+
+    /* GLOW PERMANENTE */
+    box-shadow:
+        0 0 35px rgba(0, 234, 255, .35),
+        0 0 80px rgba(123, 43, 255, .18),
+        inset 0 0 30px rgba(0, 234, 255, .08);
+
+    text-shadow:
+        0 0 12px rgba(0, 234, 255, .35);
+
+    backdrop-filter: blur(6px);
+
+    position: relative;
+
+    animation: cardFloat 6s ease-in-out infinite;
+}
+
+@keyframes cardFloat {
+
+    0% {
+        box-shadow:
+            0 0 25px rgba(0, 234, 255, .25),
+            0 0 60px rgba(123, 43, 255, .12),
+            inset 0 0 20px rgba(0, 234, 255, .05);
+    }
+
+    50% {
+        box-shadow:
+            0 0 45px rgba(0, 234, 255, .45),
+            0 0 110px rgba(123, 43, 255, .25),
+            inset 0 0 35px rgba(0, 234, 255, .12);
+    }
+
+    100% {
+        box-shadow:
+            0 0 25px rgba(0, 234, 255, .25),
+            0 0 60px rgba(123, 43, 255, .12),
+            inset 0 0 20px rgba(0, 234, 255, .05);
+    }
+
+}
+
+.bridge-desc::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: -2px;
+
+    border-radius: 20px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            transparent);
+
+    opacity: .35;
+
+    filter: blur(6px);
+
+    z-index: -1;
+
+    animation: cardGlow 6s linear infinite;
+
+}
+
+@keyframes cardGlow {
+
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+
+}
+
+/* hover elegante */
+.bridge-desc:hover {
+
+    transform: translateY(-6px) scale(1.01);
+
+    box-shadow:
+        0 0 40px rgba(0, 234, 255, .35),
+        0 0 80px rgba(123, 43, 255, .15),
+        inset 0 0 30px rgba(0, 234, 255, .08);
+
+}
+
+
+/* =========================
+   LAYERS / z-index
+   ========================= */
+.bridge-image img {
+    display: block;
+    width: var(--bridge-width);
+    max-width: 92vw;
+    height: auto;
+}
+
+.bridge-image::after {
+    z-index: 18;
+}
+
+.bridge-container::before {
+    z-index: 10;
+}
+
+.bridge-label {
+    z-index: 40;
+}
+
+.bridge-side {
+    z-index: 50;
+}
+
+.bridge-desc {
+    z-index: 30;
+}
+
+/* =========================
+   MICRO-ANIMACIONES & PARTICLES
+   ========================= */
+/* partículas simples (no heavy) */
+.bridge-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(0, 234, 255, 0.03) 0 3px, transparent 4px),
+        radial-gradient(circle at 40% 70%, rgba(123, 43, 255, 0.02) 0 4px, transparent 5px),
+        radial-gradient(circle at 78% 34%, rgba(0, 234, 255, 0.02) 0 3px, transparent 5px);
+    background-repeat: repeat;
+    opacity: .9;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* shimmer line on top (subtle) */
+.bridge-section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0, 234, 255, 0.12), transparent);
+    filter: blur(6px);
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* pequeña animación de entrada */
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translateY(6px) scale(.99);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.bridge-image,
+.bridge-label,
+.bridge-side,
+.bridge-desc {
+    animation: popIn .6s ease both;
+}
+
+/* =========================
+   RESPONSIVE (ajustes)
+   ========================= */
+@media (max-width: 1200px) {
+    :root {
+        --bridge-width: 1000px;
+        --pillar-x: 110px;
+        --bridge-lift: -28px;
+    }
+
+    .bridge-side h3 {
+        font-size: 22px;
+    }
+
+    .bridge-title {
+        margin-bottom: 40px;
+    }
+}
+
+@media (max-width: 900px) {
+    :root {
+        --bridge-width: 760px;
+        --pillar-x: 84px;
+        --bridge-lift: -6px;
+    }
+
+    .bridge-title {
+        font-size: clamp(18px, 6vw, 32px);
+    }
+
+    .bridge-side {
+        top: 64%;
+        max-width: 36vw;
+    }
+
+    .bridge-side h3 {
+        font-size: 18px;
+    }
+
+    .bridge-label {
+        font-size: 20px;
+        top: 46%;
+    }
+
+    .bridge-container::before {
+        display: none;
+    }
+
+    .bridge-image::after {
+        display: none;
+    }
+}
+
+/* =========================
+  UTILS / fallback
+  ========================= */
+.bridge-side.left,
+.bridge-side.right {
+    max-width: 32vw;
+    word-wrap: break-word;
+    padding: 0 6px;
+}
+
+/* =========================
+   MICRO ANIMATIONS + PARTICLES
+========================= */
+
+/* partículas ambientales */
+.bridge-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(0, 234, 255, .03) 0 3px, transparent 4px),
+        radial-gradient(circle at 40% 70%, rgba(123, 43, 255, .02) 0 4px, transparent 5px),
+        radial-gradient(circle at 78% 34%, rgba(0, 234, 255, .02) 0 3px, transparent 5px);
+
+    background-repeat: repeat;
+    opacity: .9;
+    z-index: 0;
+    pointer-events: none;
+
+    animation: particleDrift 30s linear infinite;
+}
+
+/* brillo superior sutil */
+.bridge-section::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 8px;
+    height: 2px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(0, 234, 255, .12),
+            transparent);
+
+    filter: blur(6px);
+    z-index: 5;
+    pointer-events: none;
+}
+
+
+/* =========================
+   ENTRADA DE ELEMENTOS
+========================= */
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: translateY(8px) scale(.98);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.bridge-image,
+.bridge-label,
+.bridge-side,
+.bridge-desc {
+    animation: popIn .7s ease both;
+}
+
+
+/* =========================
+   SCANLINE ENERGÉTICO
+========================= */
+
+.bridge-container::after {
+    content: "";
+    position: absolute;
+
+    left: 50%;
+    top: 45%;
+    transform: translateX(-50%);
+
+    width: 80%;
+    height: 2px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            transparent);
+
+    filter: blur(2px);
+    opacity: .7;
+
+    animation: scanLine 4s linear infinite;
+}
+
+@keyframes scanLine {
+
+    0% {
+        transform: translate(-50%, -40px);
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, 40px);
+        opacity: 0;
+    }
+
+}
+
+
+/* =========================
+   STREAM DATA FLOW
+========================= */
+
+.stream,
+.stream-2 {
+    pointer-events: none;
+    position: absolute;
+
+    bottom: calc(50% - 14px);
+    width: 220px;
+    height: 2px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff 20%,
+            #7b2bff 50%,
+            #00eaff 80%,
+            transparent);
+
+    box-shadow: 0 0 10px rgba(0, 234, 255, .35);
+
+    z-index: 9;
+    opacity: .95;
+
+    animation: dataFlow 3s linear infinite;
+}
+
+.stream {
+    left: calc(50% - (var(--bridge-width)/2) + 28px);
+}
+
+.stream-2 {
+    left: calc(50% + (var(--bridge-width)/2) - 248px);
+}
+
+@keyframes dataFlow {
+
+    0% {
+        opacity: 0;
+        transform: translateX(-40px);
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+}
+
+
+/* =========================
+   PARTICLE DRIFT
+========================= */
+
+@keyframes particleDrift {
+
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+
+}
+
+
+/* =========================
+   HOLOGRAPHIC TEXT GLOW
+========================= */
+
+.bridge-side h3 {
+    animation: holoGlow 4s ease-in-out infinite;
+}
+
+@keyframes holoGlow {
+
+    0% {
+        text-shadow:
+            0 0 8px rgba(0, 234, 255, .5),
+            0 0 18px rgba(123, 43, 255, .25);
+    }
+
+    50% {
+        text-shadow:
+            0 0 18px rgba(0, 234, 255, 1),
+            0 0 40px rgba(123, 43, 255, .6);
+    }
+
+    100% {
+        text-shadow:
+            0 0 8px rgba(0, 234, 255, .5),
+            0 0 18px rgba(123, 43, 255, .25);
+    }
+
+}
+
+
+/* =========================
+   FLOATING TEXT
+========================= */
+
+.bridge-side h3,
+.bridge-side p {
+    animation: floatText 6s ease-in-out infinite;
+}
+
+@keyframes floatText {
+
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+
+}
+
+
+/* =========================
+   HOVER EFFECT
+========================= */
+
+.bridge-side:hover {
+    transform: scale(1.08);
+    transition: transform .25s ease;
+}
+
+
+/* =========================
+   ENERGY CORE AURA
+========================= */
+
+.bridge-image::before {
+    content: "";
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    width: 900px;
+    height: 400px;
+
+    background: radial-gradient(circle,
+            rgba(0, 234, 255, .15),
+            rgba(123, 43, 255, .1),
+            transparent 70%);
+
+    filter: blur(40px);
+
+    animation: corePulse 6s ease-in-out infinite;
+
+    z-index: 1;
+}
+
+@keyframes corePulse {
+
+    0% {
+        opacity: .6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: .6;
+    }
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width:1200px) {
+
+    :root {
+        --bridge-width: 1000px;
+        --pillar-x: 110px;
+        --bridge-lift: -28px;
+    }
+
+    .bridge-side h3 {
+        font-size: 22px;
+    }
+
+    .bridge-title {
+        margin-bottom: 40px;
+    }
+
+}
+
+
+@media (max-width:900px) {
+
+    :root {
+        --bridge-width: 760px;
+        --pillar-x: 84px;
+        --bridge-lift: -6px;
+    }
+
+    .bridge-title {
+        font-size: clamp(18px, 6vw, 32px);
+    }
+
+    .bridge-side {
+        top: 64%;
+        max-width: 36vw;
+    }
+
+    .bridge-side h3 {
+        font-size: 18px;
+    }
+
+    .bridge-label {
+        font-size: 20px;
+        top: 46%;
+    }
+
+    .bridge-container::before,
+    .bridge-image::after {
+        display: none;
+    }
+
+}
+
+
+/* =========================
+   UTILITIES
+========================= */
+
+.bridge-side.left,
+.bridge-side.right {
+    max-width: 32vw;
+    word-wrap: break-word;
+    padding: 0 6px;
+}

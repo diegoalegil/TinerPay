@@ -1,0 +1,174 @@
+/* ================================
+   CLUSTER / VISUAL COMPONENTS
+================================ */
+
+
+/* IMAGEN DE PLATAFORMA */
+
+.platform-img{
+
+    width:150px;
+
+    margin-top:15px;
+
+    display:block;
+
+    filter:
+        drop-shadow(0 0 25px #00eaff)
+        drop-shadow(0 0 50px #7b2bff);
+
+}
+
+
+/* VISUAL COCKROACH */
+
+.cockroach-visual{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    position:relative;
+
+}
+
+.cockroach-visual img{
+
+    width:620px;
+
+    max-width:100%;
+
+    opacity:.92;
+
+    filter:
+        drop-shadow(0 0 40px #7b2bff)
+        drop-shadow(0 0 80px #00eaff);
+
+    animation:roachFloat 8s ease-in-out infinite;
+
+}
+
+
+/* ANIMACIÓN FLOTACIÓN */
+
+@keyframes roachFloat{
+
+    0%{
+        transform:translateY(0px);
+    }
+
+    50%{
+        transform:translateY(-18px);
+    }
+
+    100%{
+        transform:translateY(0px);
+    }
+
+}
+
+
+/* AURA DEL COCKROACH */
+
+.cockroach-visual::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:50%;
+    bottom:40px;
+
+    transform:translateX(-50%);
+
+    width:420px;
+    height:120px;
+
+    background:radial-gradient(circle,#7b2bff44,transparent 70%);
+
+    filter:blur(40px);
+
+    animation:roachGlow 5s ease-in-out infinite;
+
+}
+
+
+/* GLOW PULSANTE */
+
+@keyframes roachGlow{
+
+    0%{ opacity:.5; }
+
+    50%{ opacity:1; }
+
+    100%{ opacity:.5; }
+
+}
+
+
+/* DATA PACKETS (animación de red) */
+
+.data-packet{
+
+    position:fixed;
+
+    width:12px;
+    height:12px;
+
+    background:radial-gradient(circle,#00eaff,#7b2bff);
+
+    border-radius:50%;
+
+    box-shadow:
+        0 0 12px #00eaff,
+        0 0 25px #7b2bff;
+
+    transition:transform .6s linear;
+
+    z-index:1000;
+
+}
+
+
+/* COLA DE DATOS */
+
+.data-packet::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:30px;
+    height:3px;
+
+    left:-28px;
+    top:4px;
+
+    background:linear-gradient(90deg,transparent,#00eaff);
+
+    filter:blur(1px);
+
+}
+
+
+/* PULSO RAFT */
+
+@keyframes raftPulse{
+
+    0%{
+        box-shadow:0 0 10px #00ff88;
+    }
+
+    50%{
+        box-shadow:
+            0 0 30px #00ff88,
+            0 0 60px #00ff88;
+    }
+
+    100%{
+        box-shadow:0 0 10px #00ff88;
+    }
+
+}

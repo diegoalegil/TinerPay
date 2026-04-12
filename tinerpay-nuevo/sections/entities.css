@@ -1,0 +1,372 @@
+/* =========================
+   ENTITIES SECTION
+========================= */
+
+.entities-section {
+    min-height: 100vh;
+    padding: 120px 8%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+
+.entities-container {
+    max-width: 1400px;
+    text-align: center;
+}
+
+/* =========================
+   TITLE
+========================= */
+
+.entities-section h2 {
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 64px;
+
+    background: linear-gradient(90deg, #00eaff, #7b2bff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    position: relative;
+    display: inline-block;
+
+    margin-bottom: 25px;
+
+}
+
+/* animated line */
+
+.entities-section h2::after {
+
+    content: "";
+
+    position: absolute;
+    left: 50%;
+    bottom: -18px;
+
+    transform: translateX(-50%);
+
+    height: 4px;
+    width: 260px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            #7b2bff,
+            #00eaff,
+            transparent);
+
+    border-radius: 10px;
+
+    animation: entitiesLine 4s infinite ease-in-out;
+
+}
+
+@keyframes entitiesLine {
+
+    0% {
+        width: 220px;
+        opacity: .6;
+    }
+
+    50% {
+        width: 520px;
+        opacity: 1;
+    }
+
+    100% {
+        width: 220px;
+        opacity: .6;
+    }
+
+}
+
+/* =========================
+   INTRO
+========================= */
+
+.entities-intro {
+
+    font-size: 22px;
+    color: #cfd8ff;
+
+    max-width: 900px;
+    margin: auto;
+
+    line-height: 1.7;
+
+    margin-bottom: 60px;
+
+}
+
+/* =========================
+   DIAGRAM LAYOUT
+========================= */
+
+.entities-diagram {
+    position: relative;
+    width: 1200px;
+    height: 520px;
+    margin: 120px auto 0;
+}
+
+/* =========================
+   SVG LINES
+========================= */
+
+.entities-lines {
+    position: absolute;
+    top: -200px;
+    left: 0;
+
+    width: 100%;
+    height: 700px;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+
+@keyframes gradientFlow {
+
+    0%{
+        stroke-dashoffset:0;
+    }
+
+    100%{
+        stroke-dashoffset:-200;
+    }
+
+}
+
+
+/* =========================
+   BASE GLOW
+========================= */
+
+.entities-lines .line-base {
+
+    stroke:#00eaff;
+    stroke-width:5;
+
+    stroke-linecap:round;
+
+    opacity:.6;
+
+    filter:
+        drop-shadow(0 0 10px #00eaff)
+        drop-shadow(0 0 25px rgba(0,234,255,.8))
+        drop-shadow(0 0 60px rgba(123,43,255,.5));
+
+}
+
+
+/* =========================
+   ENERGY FLOW
+========================= */
+
+.entities-lines .line-flow{
+
+    stroke:url(#data-gradient);
+
+    stroke-width:4;
+
+    stroke-linecap:round;
+
+    opacity:1;
+
+    filter:
+        drop-shadow(0 0 10px #00eaff)
+        drop-shadow(0 0 30px rgba(0,234,255,.9))
+        drop-shadow(0 0 70px rgba(123,43,255,.6));
+
+}
+
+
+/* =========================
+   CORE NODE
+========================= */
+
+.entities-core {
+    position: absolute;
+
+    top: -200px;
+
+    left: 50%;
+    transform: translateX(-50%);
+
+    padding: 30px 90px;
+
+    border-radius: 18px;
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 30px;
+
+    color: #00eaff;
+
+    border: 1px solid rgba(0, 234, 255, .4);
+
+    background: rgba(10, 15, 40, .9);
+
+    box-shadow: 0 0 40px rgba(0, 234, 255, .4);
+
+    z-index: 3;
+}
+
+/* =========================
+   GRID
+========================= */
+
+.entities-grid {
+
+    margin-top: 260px;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 320px);
+
+    justify-content: center;
+
+    gap: 220px;
+
+    position: relative;
+
+    z-index: 2;
+
+}
+
+/* =========================
+   ENTITY CARDS
+========================= */
+
+.entity-card {
+
+    background: rgba(10, 15, 40, .7);
+
+    padding: 40px;
+
+    border-radius: 18px;
+
+    border: 1px solid rgba(0, 234, 255, .25);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow:
+        0 0 30px rgba(0, 234, 255, .08);
+
+    transition: .35s ease;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    gap: 12px;
+
+}
+
+/* hover */
+
+.entity-card:hover {
+
+    transform: translateY(-8px) scale(1.02);
+
+    border-color: rgba(0, 234, 255, .7);
+
+    box-shadow:
+        0 0 50px rgba(0, 234, 255, .35);
+
+}
+
+/* =========================
+   ENTITY TITLE
+========================= */
+
+.entity-card h3 {
+
+    font-family: "Orbitron", sans-serif;
+    font-size: 28px;
+
+    color: #00eaff;
+
+}
+
+/* icon */
+
+.entity-icon {
+
+    margin-right: 8px;
+
+    filter: drop-shadow(0 0 8px rgba(0, 234, 255, .7));
+
+}
+
+/* separator line */
+
+.entity-card h3::after {
+
+    content: "";
+
+    display: block;
+
+    width: 100%;
+    height: 2px;
+
+    margin-top: 12px;
+
+    background: linear-gradient(90deg,
+            transparent,
+            #00eaff,
+            transparent);
+
+}
+
+/* =========================
+   ATTRIBUTES
+========================= */
+
+.entity-card ul {
+
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+}
+
+.entity-card li {
+
+    font-size: 18px;
+    color: #cfd8ff;
+
+    padding: 6px 0;
+
+}
+
+/* PK highlight */
+
+.entity-card strong {
+
+    color: #ffffff;
+
+}
+
+#entities-path {
+
+    stroke: #00eaff;
+    stroke-width: 3;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    fill: none;
+
+    filter: drop-shadow(0 0 10px rgba(0, 234, 255, .4));
+
+}
