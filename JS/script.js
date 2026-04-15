@@ -316,30 +316,28 @@ function agregarDinero() {
         return;
     }
 
-    let salida = "";
-    let query = "";
+    const u = usuarios[Math.floor(Math.random() * usuarios.length)];
+    const cantidad = Math.floor(Math.random() * 81) + 20;
 
-    usuarios.forEach(u => {
+    u.saldo += cantidad;
 
-        const cantidad = Math.floor(Math.random() * 81) + 20;
+    const query =
+`BEGIN;
 
-        u.saldo += cantidad;
-
-        query += `UPDATE wallets
+UPDATE wallets w
 SET balance = balance + ${cantidad}
-WHERE user_id = (
-SELECT id FROM users WHERE email='${u.email}'
-);\n`;
+FROM users u
+WHERE w.user_id = u.id
+AND u.email = '${u.email}'
+AND u.deleted_at IS NULL;
 
-        salida += `${u.nombre} recibe +${cantidad}€\n`;
-
-    });
+COMMIT;`;
 
     escribir(query, document.getElementById("query"));
 
     setTimeout(() => {
 
-        document.getElementById("resultado").textContent = salida;
+        document.getElementById("resultado").textContent = `${u.nombre} recibe +${cantidad}€`;
 
         replicarOperacion(2);
         replicarDatos();
@@ -375,29 +373,34 @@ function transferir() {
     origen.saldo -= cantidad;
     destino.saldo += cantidad;
 
-    const query = `BEGIN;
+    const query =
+`BEGIN;
 
-UPDATE wallets
+UPDATE wallets w
 SET balance = balance - ${cantidad}
-WHERE user_id = (
-SELECT id FROM users WHERE email='${origen.email}'
-);
+FROM users u
+WHERE w.user_id = u.id
+AND u.email = '${origen.email}'
+AND u.deleted_at IS NULL;
 
-UPDATE wallets
+UPDATE wallets w
 SET balance = balance + ${cantidad}
-WHERE user_id = (
-SELECT id FROM users WHERE email='${destino.email}'
-);
+FROM users u
+WHERE w.user_id = u.id
+AND u.email = '${destino.email}'
+AND u.deleted_at IS NULL;
 
-INSERT INTO transactions (from_wallet,to_wallet,amount)
+INSERT INTO transactions (from_wallet, to_wallet, amount)
 VALUES (
-(SELECT id FROM wallets WHERE user_id =
-    (SELECT id FROM users WHERE email='${origen.email}')
-),
-(SELECT id FROM wallets WHERE user_id =
-    (SELECT id FROM users WHERE email='${destino.email}')
-),
-${cantidad}
+  (SELECT w.id FROM wallets w
+   JOIN users u ON w.user_id = u.id
+   WHERE u.email = '${origen.email}'
+   AND u.deleted_at IS NULL),
+  (SELECT w.id FROM wallets w
+   JOIN users u ON w.user_id = u.id
+   WHERE u.email = '${destino.email}'
+   AND u.deleted_at IS NULL),
+  ${cantidad}
 );
 
 COMMIT;`;
@@ -426,9 +429,12 @@ function verBalances() {
     let salida = "";
     usuarios.forEach(u => salida += `${u.nombre} → ${u.saldo}€\n`);
 
-    const query = `SELECT users.name, wallets.balance
-FROM wallets
-JOIN users ON wallets.user_id = users.id;`;
+    const query =
+`SELECT u.name, w.balance, w.currency_code
+FROM wallets w
+JOIN users u ON w.user_id = u.id
+WHERE u.deleted_at IS NULL;`;
+
     escribir(query, document.getElementById("query"));
 
     setTimeout(() => {

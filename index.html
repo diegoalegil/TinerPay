@@ -572,31 +572,48 @@ USE tinerpay;</pre>
             <div class="sql-body">
 
                 <div class="sql-panel active" id="sql-insert">
-                    <p class="sql-desc">Transferencia ACID — el saldo se valida directamente en la query para evitar saldos negativos.</p>
+                    <p class="sql-desc">Crear usuario con wallet inicial — se usa un CTE para obtener el UUID generado y asociarlo a la wallet en una sola operación atómica.</p>
                     <pre>BEGIN;
 
-UPDATE wallets
-SET balance = balance - 50
-WHERE id = 'wallet-origen'
-AND balance >= 50;
-
-UPDATE wallets
-SET balance = balance + 50
-WHERE id = 'wallet-destino';
-
-INSERT INTO transactions (from_wallet, to_wallet, amount)
-VALUES ('wallet-origen', 'wallet-destino', 50);
+WITH new_user AS (
+  INSERT INTO users (name, email)
+  VALUES ('Diego', 'diego@gmail.com')
+  RETURNING id
+)
+INSERT INTO wallets (user_id, currency_code, balance)
+SELECT id, 'EUR', 0 FROM new_user;
 
 COMMIT;</pre>
                 </div>
 
                 <div class="sql-panel" id="sql-select">
-                    <p class="sql-desc">Filtro de usuarios activos — evita operar sobre cuentas eliminadas con soft delete.</p>
+
+                    <p class="sql-desc">Balances de un usuario activo — usa el índice <code>wallets(user_id)</code>.</p>
                     <pre>SELECT w.balance, w.currency_code
 FROM wallets w
 JOIN users u ON w.user_id = u.id
 WHERE u.email = 'diego@gmail.com'
 AND u.deleted_at IS NULL;</pre>
+
+                    <p class="sql-desc" style="margin-top:1.2rem;">Historial de envíos de una wallet — usa el índice <code>transactions(from_wallet)</code>.</p>
+                    <pre>SELECT t.amount, t.created_at
+FROM transactions t
+WHERE t.from_wallet = 'uuid-wallet-origen'
+ORDER BY t.created_at DESC;</pre>
+
+                    <p class="sql-desc" style="margin-top:1.2rem;">Historial de recepciones de una wallet — usa el índice <code>transactions(to_wallet)</code>.</p>
+                    <pre>SELECT t.amount, t.created_at
+FROM transactions t
+WHERE t.to_wallet = 'uuid-wallet-destino'
+ORDER BY t.created_at DESC;</pre>
+
+                    <p class="sql-desc" style="margin-top:1.2rem;">Wallets por divisa — usa el índice <code>wallets(currency_code)</code>.</p>
+                    <pre>SELECT w.id, w.balance, u.name
+FROM wallets w
+JOIN users u ON w.user_id = u.id
+WHERE w.currency_code = 'EUR'
+AND u.deleted_at IS NULL;</pre>
+
                 </div>
 
                 <div class="sql-panel" id="sql-update">
