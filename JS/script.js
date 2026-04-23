@@ -1,14 +1,18 @@
-/* ===== TINERPAY - demo JS (corregido y mejorado) ===== */
+/* ===== TINERPAY - conectado a CockroachDB real ===== */
 
-/* Datos base */
+const API_URL = 'http://localhost:3000/api';
+
+/* Datos base — orden de inserción */
 const usuariosBase = [
-    { nombre: "Diego", email: "diegodam@gmail.com", saldo: 0 },
-    { nombre: "Jorge", email: "jorgedam@gmail.com", saldo: 0 },
-    { nombre: "Grecia", email: "greciadam@gmail.com", saldo: 0 },
-    { nombre: "Jaime", email: "jaimedam@gmail.com", saldo: 0 },
-    { nombre: "Atteneri", email: "atteneridam@gmail.com", saldo: 0 }
+    { nombre: "Diego",    email: "diegodam@gmail.com" },
+    { nombre: "Jorge",    email: "jorgedam@gmail.com" },
+    { nombre: "Grecia",   email: "greciadam@gmail.com" },
+    { nombre: "Jaime",    email: "jaimedam@gmail.com" },
+    { nombre: "Atteneri", email: "atteneridam@gmail.com" }
 ];
 
+// Estado en memoria sincronizado con la BD
+// Cada entrada: { id, nombre, email, wallet_id, saldo }
 let usuarios = [];
 
 /* ===== Util: typing effect ===== */
@@ -174,6 +178,9 @@ function fallarNodo() {
     setTimeout(() => {
         nodo1.classList.remove("node-flickering");
 
+        // Matar el nodo real en CockroachDB
+        fetch(`${API_URL}/cluster/node/1/kill`, { method: 'POST' }).catch(() => {});
+
         // ── SCREEN SHAKE ÉPICO ──
         document.body.classList.add("screen-shake-epic");
         setTimeout(() => document.body.classList.remove("screen-shake-epic"), 700);
@@ -262,41 +269,73 @@ function fallarNodo() {
     }, 3000);
 }
 
-/* ===== Reiniciar cluster (UI) ===== */
+/* ===== Reiniciar cluster (UI + nodo real) ===== */
 function reiniciarCluster() {
-    document.querySelectorAll(".node-dead").forEach(n => n.classList.remove("node-dead"));
+    const nodo1 = document.getElementById("node1");
+    if (nodo1) {
+        nodo1.classList.remove("node-dead", "node-burning", "node-meltdown", "node-explode", "node-flickering");
+    }
+    document.querySelectorAll(".node-dead").forEach(n =>
+        n.classList.remove("node-dead", "node-burning", "node-meltdown"));
     document.querySelectorAll(".range").forEach(r => r.classList.remove("election"));
-    logRaft("Cluster recuperado — todos los nodos activos");
+
+    // Restaurar Range 3 al líder original (nodo1)
+    const r3 = document.querySelectorAll(".r3");
+    r3.forEach((r, i) => {
+        r.classList.remove("leader", "election");
+        r.innerText = i === 0 ? "Range 3 • Leader" : "Range 3 • Follower";
+        if (i === 0) r.classList.add("leader");
+    });
+
+    // Re-habilitar botón nuclear
+    const nuclearBtn = document.getElementById("nuclear-button");
+    if (nuclearBtn) { nuclearBtn.disabled = false; }
+
+    logRaft("Cluster recuperado — todos los nodos activos", "log-consensus");
+
+    // Reiniciar nodo real
+    fetch(`${API_URL}/cluster/node/1/restart`, { method: 'POST' }).catch(() => {});
 }
 
-/* ===== CRUD + Demo (simulación local) ===== */
+/* ===== CRUD + Demo (conectado a CockroachDB real) ===== */
 
-function crearUsuario() {
+async function crearUsuario() {
     if (usuarios.length >= usuariosBase.length) {
         document.getElementById("resultado").textContent = "Todos los usuarios ya fueron creados.";
         return;
     }
 
     const u = usuariosBase[usuarios.length];
-    usuarios.push({ ...u });
 
-    // Query más coherente con esquema (user + wallet)
-    const query =
+    const sqlTexto =
         `WITH new_user AS (
-INSERT INTO users (name,email)
-VALUES ('${u.nombre}','${u.email}')
+INSERT INTO users (name, email)
+VALUES ('${u.nombre}', '${u.email}')
 RETURNING id
 )
+INSERT INTO wallets (user_id, currency_code, balance)
+SELECT id, 'EUR', 0 FROM new_user;`;
 
-INSERT INTO wallets (user_id,currency_code,balance)
-SELECT id,'EUR',0 FROM new_user;`;
+    escribir(sqlTexto, document.getElementById("query"));
 
-    escribir(query, document.getElementById("query"));
+    try {
+        const res  = await fetch(`${API_URL}/users`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ name: u.nombre, email: u.email })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-    setTimeout(() => {
-        document.getElementById("resultado").textContent = `Usuario creado:\n${u.nombre} — ${u.email}`;
-        replicarOperacion(1); // ahora replicarOperacion llamará a replicarDatos(range)
-    }, 900);
+        usuarios.push({ id: data.user_id, nombre: u.nombre, email: u.email, wallet_id: data.wallet_id, saldo: 0 });
+
+        document.getElementById("resultado").textContent =
+            `✓ Usuario creado en CockroachDB:\n${u.nombre} — ${u.email}\nwallet_id: ${data.wallet_id}`;
+
+        replicarOperacion(1);
+    } catch (e) {
+        document.getElementById("resultado").textContent = `✗ Error: ${e.message}`;
+    }
 }
 
 function screenShake() {
@@ -309,19 +348,17 @@ function screenShake() {
 
 }
 
-function agregarDinero() {
+async function agregarDinero() {
 
     if (usuarios.length === 0) {
         document.getElementById("resultado").textContent = "No hay usuarios creados.";
         return;
     }
 
-    const u = usuarios[Math.floor(Math.random() * usuarios.length)];
+    const u       = usuarios[Math.floor(Math.random() * usuarios.length)];
     const cantidad = Math.floor(Math.random() * 81) + 20;
 
-    u.saldo += cantidad;
-
-    const query =
+    const sqlTexto =
 `BEGIN;
 
 UPDATE wallets w
@@ -333,19 +370,30 @@ AND u.deleted_at IS NULL;
 
 COMMIT;`;
 
-    escribir(query, document.getElementById("query"));
+    escribir(sqlTexto, document.getElementById("query"));
 
-    setTimeout(() => {
+    try {
+        const res  = await fetch(`${API_URL}/wallets/deposit`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({ wallet_id: u.wallet_id, amount: cantidad })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-        document.getElementById("resultado").textContent = `${u.nombre} recibe +${cantidad}€`;
+        u.saldo = parseFloat(data.new_balance);
+
+        document.getElementById("resultado").textContent =
+            `✓ ${u.nombre} recibe +${cantidad}€\nSaldo real en BD: ${u.saldo.toFixed(2)}€`;
 
         replicarOperacion(2);
         replicarDatos();
-
-    }, 900);
+    } catch (e) {
+        document.getElementById("resultado").textContent = `✗ Error: ${e.message}`;
+    }
 }
 
-function transferir() {
+async function transferir() {
 
     logTransaccion("BEGIN TRANSACTION");
 
@@ -354,26 +402,22 @@ function transferir() {
         return;
     }
 
-    let origen = usuarios[Math.floor(Math.random() * usuarios.length)];
+    let origen  = usuarios[Math.floor(Math.random() * usuarios.length)];
     let destino = usuarios[Math.floor(Math.random() * usuarios.length)];
-
     while (destino === origen) {
         destino = usuarios[Math.floor(Math.random() * usuarios.length)];
     }
 
-    let cantidad = Math.floor(Math.random() * 40) + 10;
+    const cantidad = Math.floor(Math.random() * 40) + 10;
 
     if (origen.saldo < cantidad) {
         document.getElementById("resultado").textContent =
-            `${origen.nombre} no tiene saldo suficiente.`;
+            `${origen.nombre} no tiene saldo suficiente (${origen.saldo.toFixed(2)}€ < ${cantidad}€).`;
+        logTransaccion("ROLLBACK — saldo insuficiente");
         return;
     }
 
-    // estado local (simulación)
-    origen.saldo -= cantidad;
-    destino.saldo += cantidad;
-
-    const query =
+    const sqlTexto =
 `BEGIN;
 
 UPDATE wallets w
@@ -405,41 +449,73 @@ VALUES (
 
 COMMIT;`;
 
-    escribir(query, document.getElementById("query"));
+    escribir(sqlTexto, document.getElementById("query"));
 
-    setTimeout(() => {
+    try {
+        const res  = await fetch(`${API_URL}/transactions`, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify({
+                from_wallet_id: origen.wallet_id,
+                to_wallet_id:   destino.wallet_id,
+                amount:         cantidad
+            })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        origen.saldo  = parseFloat(data.from_balance);
+        destino.saldo = parseFloat(data.to_balance);
 
         document.getElementById("resultado").textContent =
-            `${origen.nombre} → ${destino.nombre} : ${cantidad}€`;
+            `✓ ${origen.nombre} → ${destino.nombre} : ${cantidad}€\ntx_id: ${data.transaction_id}`;
 
         replicarOperacion(3);
         replicarDatos();
-
         logTransaccion("COMMIT — transacción confirmada por mayoría");
-
-    }, 900);
+    } catch (e) {
+        document.getElementById("resultado").textContent = `✗ Error: ${e.message}`;
+        logTransaccion(`ROLLBACK — ${e.message}`);
+    }
 }
 
-function verBalances() {
-    if (usuarios.length === 0) {
-        document.getElementById("resultado").textContent = "No hay usuarios.";
-        return;
-    }
+async function verBalances() {
 
-    let salida = "";
-    usuarios.forEach(u => salida += `${u.nombre} → ${u.saldo}€\n`);
-
-    const query =
+    const sqlTexto =
 `SELECT u.name, w.balance, w.currency_code
 FROM wallets w
 JOIN users u ON w.user_id = u.id
-WHERE u.deleted_at IS NULL;`;
+WHERE u.deleted_at IS NULL
+ORDER BY u.name;`;
 
-    escribir(query, document.getElementById("query"));
+    escribir(sqlTexto, document.getElementById("query"));
 
-    setTimeout(() => {
-        document.getElementById("resultado").textContent = salida;
-    }, 900);
+    try {
+        const res  = await fetch(`${API_URL}/users`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+
+        if (!data.length) {
+            document.getElementById("resultado").textContent = "Sin usuarios en la base de datos.";
+            return;
+        }
+
+        // Sincronizar saldos locales con la BD
+        data.forEach(row => {
+            const u = usuarios.find(u => u.id === row.user_id);
+            if (u) u.saldo = parseFloat(row.balance);
+        });
+
+        const salida = data.map(r =>
+            `${r.name.padEnd(10)} → ${parseFloat(r.balance).toFixed(2).padStart(8)}€  (${r.currency_code})`
+        ).join('\n');
+
+        setTimeout(() => {
+            document.getElementById("resultado").textContent = salida;
+        }, 900);
+    } catch (e) {
+        document.getElementById("resultado").textContent = `✗ Error: ${e.message}`;
+    }
 }
 
 /* ===== Helpers de ranges / replicación ===== */
@@ -602,18 +678,23 @@ const revealObserver = new IntersectionObserver((entries) => {
 
 revealElements.forEach(el => revealObserver.observe(el));
 
-/* ===== Instalación: efecto terminal seguro ===== */
+/* ===== Instalación: efecto terminal (comandos reales) ===== */
 const installLines = [
-    "$ docker compose up -d",
-    "$ docker exec -it cockroach1 cockroach init --insecure",
-    "$ docker exec -it cockroach1 cockroach sql --insecure",
+    "$ brew install cockroachdb/tap/cockroach",
     "",
-    "initializing cluster...",
+    "==> Installing cockroach...",
+    "==> cockroach 24.3.x instalado",
     "",
-    "Cluster successfully initialized!",
-    "node1:26257",
-    "node2:26258",
-    "node3:26259"
+    "$ node server/index.js",
+    "",
+    "[cluster] Arrancando nodo 1 en :26257",
+    "[cluster] Arrancando nodo 2 en :26258",
+    "[cluster] Arrancando nodo 3 en :26259",
+    "[cluster] Cluster inicializado",
+    "[db] Schema listo — tinerpay con 4 tablas",
+    "",
+    "TinerPay corriendo en localhost:3000",
+    "CockroachDB UI → localhost:8080"
 ];
 
 let terminal;
@@ -650,6 +731,47 @@ window.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".r3").forEach(r => {
         r.innerText = "Range 3 • Transactions"
     })
+
+    // Cargar usuarios existentes desde la BD al arrancar
+    fetch(`${API_URL}/users`)
+        .then(r => r.json())
+        .then(data => {
+            if (!Array.isArray(data)) return;
+            usuarios = data.map(row => ({
+                id:        row.user_id,
+                nombre:    row.name,
+                email:     row.email,
+                wallet_id: row.wallet_id,
+                saldo:     parseFloat(row.balance)
+            }));
+            if (usuarios.length > 0) {
+                logRaft(`BD conectada — ${usuarios.length} usuario(s) cargado(s)`, "log-consensus");
+            } else {
+                logRaft("BD conectada — lista de usuarios vacía", "log-raft");
+            }
+        })
+        .catch(() => {
+            logRaft("Servidor no disponible — asegúrate de ejecutar start.sh", "log-fail");
+        });
+
+    // Polling de estado del cluster cada 3 segundos
+    setInterval(() => {
+        fetch(`${API_URL}/cluster/status`)
+            .then(r => r.json())
+            .then(data => {
+                if (!data.nodes) return;
+                data.nodes.forEach(node => {
+                    const el = document.getElementById(`node${node.id}`);
+                    if (!el) return;
+                    if (!node.alive && !el.classList.contains("node-dead")) {
+                        el.classList.add("node-dead");
+                    } else if (node.alive && el.classList.contains("node-dead")) {
+                        el.classList.remove("node-dead");
+                    }
+                });
+            })
+            .catch(() => {});
+    }, 3000);
 
 });
 
