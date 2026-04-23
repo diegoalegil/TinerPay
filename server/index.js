@@ -52,7 +52,7 @@ app.get('/api/users', async (req, res) => {
     try {
         const result = await db.query(`
             SELECT u.id AS user_id, u.name, u.email,
-                   w.id AS wallet_id, w.balance
+                   w.id AS wallet_id, w.balance, w.currency_code
             FROM   users   u
             JOIN   wallets w ON w.user_id = u.id
             WHERE  u.deleted_at IS NULL

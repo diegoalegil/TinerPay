@@ -348,6 +348,8 @@ function screenShake() {
 
 }
 
+let _depositoIdx = 0;
+
 async function agregarDinero() {
 
     if (usuarios.length === 0) {
@@ -355,8 +357,10 @@ async function agregarDinero() {
         return;
     }
 
-    const u       = usuarios[Math.floor(Math.random() * usuarios.length)];
-    const cantidad = Math.floor(Math.random() * 81) + 20;
+    // Recorre usuarios en orden de creación, ciclando
+    const u       = usuarios[_depositoIdx % usuarios.length];
+    _depositoIdx++;
+    const cantidad = Math.floor(Math.random() * 151) + 50; // 50–200 €
 
     const sqlTexto =
 `BEGIN;

@@ -40,6 +40,13 @@ if [ ! -d "node_modules" ]; then
     echo ""
 fi
 
+# Liberar puerto 3000 si está ocupado
+if lsof -ti :3000 &>/dev/null; then
+    echo "Liberando puerto 3000..."
+    kill $(lsof -ti :3000) 2>/dev/null || true
+    sleep 1
+fi
+
 # Arrancar el servidor (que a su vez arranca CockroachDB y el schema)
 echo "Iniciando cluster y servidor..."
 node index.js
