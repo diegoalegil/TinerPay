@@ -5,9 +5,9 @@ echo "Limpiando base de datos TinerPay..."
 
 cockroach sql --insecure --host=localhost:26257 <<'SQL'
 USE tinerpay;
-DELETE FROM transactions WHERE true;
-DELETE FROM wallets WHERE true;
-DELETE FROM users WHERE true;
+TRUNCATE TABLE transactions CASCADE;
+TRUNCATE TABLE wallets CASCADE;
+TRUNCATE TABLE users CASCADE;
 SELECT 'BD limpia — ' || count(*)::string || ' usuarios' FROM users;
 SQL
 
