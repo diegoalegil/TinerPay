@@ -927,11 +927,28 @@ AND deleted_at IS NULL;</pre>
 
             <div class="arch-layer arch-db">
                 <div class="arch-layer-label">3. BASE DE DATOS DISTRIBUIDA<br>(CockroachDB — 3 NODOS)</div>
-                <div class="arch-raft-label">— REPLICACIÓN (RAFT) —</div>
-                <div class="arch-nodes-list">
-                    <div class="arch-node-row">🪳 <span>Nodo 1</span><em>:26257</em></div>
-                    <div class="arch-node-row">🪳 <span>Nodo 2</span><em>:26258</em></div>
-                    <div class="arch-node-row">🪳 <span>Nodo 3</span><em>:26259</em></div>
+                <div class="arch-raft-label">— — — REPLICACIÓN (RAFT) — — —</div>
+                <div class="arch-cylinders">
+                    <div class="arch-cyl">
+                        <div class="arch-cyl-top"></div>
+                        <div class="arch-cyl-body"><img src="img/roach.png" alt=""></div>
+                        <div class="arch-cyl-name">Nodo 1</div>
+                        <div class="arch-cyl-port">:26257</div>
+                    </div>
+                    <div class="arch-cyl-arrows">⇄</div>
+                    <div class="arch-cyl">
+                        <div class="arch-cyl-top"></div>
+                        <div class="arch-cyl-body"><img src="img/roach.png" alt=""></div>
+                        <div class="arch-cyl-name">Nodo 2</div>
+                        <div class="arch-cyl-port">:26258</div>
+                    </div>
+                    <div class="arch-cyl-arrows">⇄</div>
+                    <div class="arch-cyl">
+                        <div class="arch-cyl-top"></div>
+                        <div class="arch-cyl-body"><img src="img/roach.png" alt=""></div>
+                        <div class="arch-cyl-name">Nodo 3</div>
+                        <div class="arch-cyl-port">:26259</div>
+                    </div>
                 </div>
                 <p class="arch-layer-desc">CockroachDB replica los datos en los 3 nodos usando el consenso Raft para mantener todo consistente y disponible.</p>
             </div>

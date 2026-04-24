@@ -65,14 +65,16 @@ function spawnNode(node) {
 async function startCluster() {
     console.log('[cluster] Iniciando CockroachDB (3 nodos)...');
 
+    // Matar cualquier proceso CockroachDB huérfano de sesiones anteriores
+    try {
+        execSync('pkill -9 -f "cockroach start"', { stdio: 'pipe' });
+        await new Promise(r => setTimeout(r, 1000));
+    } catch (_) {}
+
+    // Arrancar los 3 nodos siempre desde cero
     for (const node of NODES) {
-        const up = await checkPort(node.port);
-        if (up) {
-            console.log(`[cluster] Nodo ${node.id} ya activo en :${node.port}`);
-        } else {
-            console.log(`[cluster] Arrancando nodo ${node.id} en :${node.port}`);
-            spawnNode(node);
-        }
+        console.log(`[cluster] Arrancando nodo ${node.id} en :${node.port}`);
+        spawnNode(node);
     }
 
     console.log('[cluster] Esperando que los 3 nodos respondan...');
@@ -98,21 +100,31 @@ function killNode(id) {
     const node = NODES.find(n => n.id === id);
     if (!node) throw new Error(`Nodo ${id} no encontrado`);
 
-    // Matar el proceso rastreado si existe
+    // 1. Matar el proceso rastreado si existe
     if (node.proc) {
-        node.proc.kill('SIGKILL');
+        try { node.proc.kill('SIGKILL'); } catch (_) {}
         node.proc = null;
     }
 
-    // También forzar cierre via cockroach quit por si acaso
+    // 2. Fallback: solo el proceso que escucha en el puerto SQL (no clientes)
     try {
-        execSync(`cockroach quit --insecure --host=localhost:${node.port} --drain-wait=0s`, {
-            stdio: 'pipe',
-            timeout: 3000
-        });
-    } catch (_) { /* ignorar — puede que ya esté muerto */ }
+        const pid = execSync(
+            `lsof -ti tcp:${node.port} -s TCP:LISTEN`,
+            { stdio: 'pipe' }
+        ).toString().trim();
+        if (pid) execSync(`kill -9 ${pid}`, { stdio: 'pipe' });
+    } catch (_) {}
 
-    console.log(`[cluster] Nodo ${id} eliminado`);
+    // 3. Fallback: solo el proceso que escucha en el puerto HTTP
+    try {
+        const pid = execSync(
+            `lsof -ti tcp:${node.httpPort} -s TCP:LISTEN`,
+            { stdio: 'pipe' }
+        ).toString().trim();
+        if (pid) execSync(`kill -9 ${pid}`, { stdio: 'pipe' });
+    } catch (_) {}
+
+    console.log(`[cluster] Nodo ${id} eliminado (SQL :${node.port} HTTP :${node.httpPort})`);
 }
 
 function restartNode(id) {
