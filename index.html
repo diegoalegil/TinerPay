@@ -44,6 +44,7 @@
     <link rel="stylesheet" href="sections/crud.css">
     <link rel="stylesheet" href="sections/indexes.css">
     <link rel="stylesheet" href="sections/demo.css">
+    <link rel="stylesheet" href="sections/backend-arch.css">
     <link rel="stylesheet" href="sections/requirements-review.css">
 
 </head>
@@ -878,6 +879,175 @@ AND deleted_at IS NULL;</pre>
     </section>
 
     <!-- ══════════════════════════════════════════════════════════
+         ARQUITECTURA: CÓMO FUNCIONA EL BACKEND
+    ══════════════════════════════════════════════════════════ -->
+
+    <section id="backend-arquitectura" class="backend-arch-section">
+
+        <h2 class="backend-arch-title">Cómo funciona el backend y cómo se conecta con la web</h2>
+        <p class="backend-arch-sub">Flujo completo de una acción (ejemplo: crear usuario)</p>
+
+        <!-- Diagrama de 3 capas -->
+        <div class="arch-layers">
+
+            <div class="arch-layer arch-frontend">
+                <div class="arch-layer-label">1. FRONTEND (WEB)</div>
+                <div class="arch-browser">
+                    <div class="arch-browser-bar"><span></span><span></span><span></span></div>
+                    <div class="arch-browser-body">
+                        <div class="arch-brand">TinerPay</div>
+                        <button class="arch-fake-btn">Crear usuario</button>
+                    </div>
+                </div>
+                <p class="arch-layer-desc">El usuario pulsa un botón en la página web.</p>
+            </div>
+
+            <div class="arch-arrow-wrap">
+                <div class="arch-arrow-label">PETICIÓN HTTP<br><span>(fetch)</span></div>
+                <div class="arch-arrow">→</div>
+            </div>
+
+            <div class="arch-layer arch-backend">
+                <div class="arch-layer-label">2. BACKEND (Node.js + Express)</div>
+                <div class="arch-routes">
+                    <div class="arch-route-title">API REST (RUTAS)</div>
+                    <div class="arch-route"><span class="method post">POST</span> /api/users <em>Crear usuario</em></div>
+                    <div class="arch-route"><span class="method get">GET</span> /api/users <em>Listar usuarios</em></div>
+                    <div class="arch-route"><span class="method post">POST</span> /api/transactions <em>Hacer transferencia</em></div>
+                    <div class="arch-route"><span class="method get">GET</span> /api/cluster/status <em>Estado del cluster</em></div>
+                    <div class="arch-route muted">...</div>
+                </div>
+                <p class="arch-layer-desc">El backend recibe la petición, ejecuta la lógica correspondiente y realiza consultas a la base de datos.</p>
+            </div>
+
+            <div class="arch-arrow-wrap">
+                <div class="arch-arrow-label">CONSULTA SQL</div>
+                <div class="arch-arrow">→</div>
+            </div>
+
+            <div class="arch-layer arch-db">
+                <div class="arch-layer-label">3. BASE DE DATOS DISTRIBUIDA<br>(CockroachDB — 3 NODOS)</div>
+                <div class="arch-raft-label">— REPLICACIÓN (RAFT) —</div>
+                <div class="arch-nodes-list">
+                    <div class="arch-node-row">🪳 <span>Nodo 1</span><em>:26257</em></div>
+                    <div class="arch-node-row">🪳 <span>Nodo 2</span><em>:26258</em></div>
+                    <div class="arch-node-row">🪳 <span>Nodo 3</span><em>:26259</em></div>
+                </div>
+                <p class="arch-layer-desc">CockroachDB replica los datos en los 3 nodos usando el consenso Raft para mantener todo consistente y disponible.</p>
+            </div>
+
+        </div>
+
+        <!-- Flecha de respuesta -->
+        <div class="arch-response-row">
+            <div class="arch-response-end">◀</div>
+            <div class="arch-response-arrow">← &nbsp; RESPUESTA JSON &nbsp; ←</div>
+            <div class="arch-response-end" style="opacity:0.3">◀</div>
+        </div>
+
+        <!-- Paso a paso + Fallback -->
+        <div class="arch-bottom">
+
+            <div class="arch-steps-box">
+                <div class="arch-steps-title">FLUJO PASO A PASO</div>
+                <div class="arch-steps">
+                    <div class="arch-step">
+                        <div class="arch-step-num">1</div>
+                        <div class="arch-step-icon">👆</div>
+                        <div class="arch-step-name">Acción del usuario</div>
+                        <div class="arch-step-desc">El usuario hace click en un botón o rellena un formulario.</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">2</div>
+                        <div class="arch-step-icon">🌐</div>
+                        <div class="arch-step-name">Petición HTTP</div>
+                        <div class="arch-step-desc">La web envía una petición HTTP al backend usando fetch().</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">3</div>
+                        <div class="arch-step-icon">🗄️</div>
+                        <div class="arch-step-name">Backend recibe</div>
+                        <div class="arch-step-desc">Express recibe la petición en la ruta correspondiente.</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">4</div>
+                        <div class="arch-step-icon">⚙️</div>
+                        <div class="arch-step-name">Lógica + SQL</div>
+                        <div class="arch-step-desc">El backend valida los datos y ejecuta una o varias consultas SQL.</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">5</div>
+                        <div class="arch-step-icon">🗃️</div>
+                        <div class="arch-step-name">Base de datos</div>
+                        <div class="arch-step-desc">CockroachDB procesa la consulta y replica los cambios (Raft).</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">6</div>
+                        <div class="arch-step-icon">↩️</div>
+                        <div class="arch-step-name">Respuesta</div>
+                        <div class="arch-step-desc">La base de datos devuelve el resultado y el backend lo envía como JSON.</div>
+                    </div>
+                    <div class="arch-step">
+                        <div class="arch-step-num">7</div>
+                        <div class="arch-step-icon">✅</div>
+                        <div class="arch-step-name">UI actualizada</div>
+                        <div class="arch-step-desc">La web recibe la respuesta y actualiza la interfaz sin recargar la página.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="arch-fallback-box">
+                <div class="arch-steps-title">CONEXIÓN INTELIGENTE (FALLBACK)</div>
+                <div class="arch-fallback-item">
+                    <div class="arch-fallback-num">1</div>
+                    <div class="arch-fallback-text">El backend intenta conectarse al Nodo 1 (26257).</div>
+                    <div class="arch-fallback-ok">✓</div>
+                </div>
+                <div class="arch-fallback-item">
+                    <div class="arch-fallback-num">2</div>
+                    <div class="arch-fallback-text">Si falla o no responde, prueba el Nodo 2 (26258).</div>
+                    <div class="arch-fallback-warn">⚠</div>
+                </div>
+                <div class="arch-fallback-item">
+                    <div class="arch-fallback-num">3</div>
+                    <div class="arch-fallback-text">Si también falla, prueba el Nodo 3 (26259).</div>
+                    <div class="arch-fallback-warn">⚠</div>
+                </div>
+                <div class="arch-fallback-note">
+                    💡 Así el sistema sigue funcionando aunque un nodo se caiga.
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Pie de info -->
+        <div class="arch-info-row">
+            <div class="arch-info-card">
+                <div class="arch-info-title">¿QUÉ ES EL BACKEND?</div>
+                <p>Es el intermediario entre la web y la base de datos. Se encarga de la lógica, seguridad, validaciones y acceso controlado a los datos.</p>
+            </div>
+            <div class="arch-info-card">
+                <div class="arch-info-title">¿POR QUÉ ES IMPORTANTE?</div>
+                <ul>
+                    <li><b>Seguridad:</b> la base de datos no es accesible directamente.</li>
+                    <li><b>Control:</b> toda la lógica de negocio está en el backend.</li>
+                    <li><b>Resiliencia:</b> si un nodo falla, el sistema sigue funcionando.</li>
+                </ul>
+            </div>
+            <div class="arch-info-card arch-info-tech">
+                <div class="arch-info-title">TECNOLOGÍAS UTILIZADAS</div>
+                <ul>
+                    <li>Frontend: HTML, CSS, JavaScript</li>
+                    <li>Backend: Node.js, Express</li>
+                    <li>Base de datos: CockroachDB (distribuida, Raft)</li>
+                    <li>Comunicación: HTTP + JSON</li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ══════════════════════════════════════════════════════════
          12. DEMO INTERACTIVA
     ══════════════════════════════════════════════════════════ -->
 
@@ -893,6 +1063,14 @@ AND deleted_at IS NULL;</pre>
                 <button onclick="transferir()">Transferir</button>
                 <button onclick="verBalances()">Ver balances</button>
                 <button onclick="reiniciarCluster()">↺ Reiniciar cluster</button>
+                <div class="nuclear-container" id="nuclear-container-moved">
+                    <div id="safety-cover" class="safety-cover" onclick="abrirTapa()">
+                        <div class="warning-stripes"></div>
+                    </div>
+                    <button id="nuclear-button" class="nuclear-button" onclick="fallarNodo()" disabled>
+                        SIMULAR FALLO
+                    </button>
+                </div>
             </div>
 
             <div class="terminal">
@@ -908,47 +1086,88 @@ AND deleted_at IS NULL;</pre>
         <div class="cluster-network">
 
             <div class="cluster-node" id="node1">
-                <h3>Nodo 1</h3>
+                <div class="node-header-row">
+                    <h3>Nodo 1</h3>
+                    <div class="node-badge live" id="badge-node1">● LIVE</div>
+                </div>
                 <div class="node-region" id="region-node1"></div>
                 <div class="node-latency" id="latency-node1"></div>
                 <div class="range r1">Range 1 • Follower</div>
                 <div class="range r2">Range 2 • Follower</div>
                 <div class="range r3 leader">Range 3 • Leader</div>
+                <div class="node-divider"></div>
+                <div class="node-stats">
+                    <div class="node-stat"><span class="stat-label">Puerto SQL</span><span class="stat-val">26257</span></div>
+                    <div class="node-stat"><span class="stat-label">HTTP UI</span><span class="stat-val"><a href="http://localhost:8080" target="_blank">:8080 ↗</a></span></div>
+                    <div class="node-stat"><span class="stat-label">Réplicas</span><span class="stat-val">3</span></div>
+                    <div class="node-stat"><span class="stat-label">Consenso</span><span class="stat-val">Raft</span></div>
+                </div>
+                <div class="node-heartbeat" id="hb-node1">
+                    <span class="hb-label">Heartbeat</span>
+                    <div class="hb-bars">
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                    </div>
+                </div>
                 <div class="kv" id="kv1"></div>
             </div>
 
             <div class="cluster-node" id="node2">
-                <h3>Nodo 2</h3>
+                <div class="node-header-row">
+                    <h3>Nodo 2</h3>
+                    <div class="node-badge live" id="badge-node2">● LIVE</div>
+                </div>
                 <div class="node-region" id="region-node2"></div>
                 <div class="node-latency" id="latency-node2"></div>
                 <div class="range r1 leader">Range 1 • Leader</div>
                 <div class="range r2">Range 2 • Follower</div>
                 <div class="range r3">Range 3 • Follower</div>
+                <div class="node-divider"></div>
+                <div class="node-stats">
+                    <div class="node-stat"><span class="stat-label">Puerto SQL</span><span class="stat-val">26258</span></div>
+                    <div class="node-stat"><span class="stat-label">HTTP UI</span><span class="stat-val"><a href="http://localhost:8081" target="_blank">:8081 ↗</a></span></div>
+                    <div class="node-stat"><span class="stat-label">Réplicas</span><span class="stat-val">3</span></div>
+                    <div class="node-stat"><span class="stat-label">Consenso</span><span class="stat-val">Raft</span></div>
+                </div>
+                <div class="node-heartbeat" id="hb-node2">
+                    <span class="hb-label">Heartbeat</span>
+                    <div class="hb-bars">
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                    </div>
+                </div>
                 <div class="kv" id="kv2"></div>
             </div>
 
             <div class="cluster-node" id="node3">
-                <h3>Nodo 3</h3>
+                <div class="node-header-row">
+                    <h3>Nodo 3</h3>
+                    <div class="node-badge live" id="badge-node3">● LIVE</div>
+                </div>
                 <div class="node-region" id="region-node3"></div>
                 <div class="node-latency" id="latency-node3"></div>
                 <div class="range r1">Range 1 • Follower</div>
                 <div class="range r2 leader">Range 2 • Leader</div>
                 <div class="range r3">Range 3 • Follower</div>
+                <div class="node-divider"></div>
+                <div class="node-stats">
+                    <div class="node-stat"><span class="stat-label">Puerto SQL</span><span class="stat-val">26259</span></div>
+                    <div class="node-stat"><span class="stat-label">HTTP UI</span><span class="stat-val"><a href="http://localhost:8082" target="_blank">:8082 ↗</a></span></div>
+                    <div class="node-stat"><span class="stat-label">Réplicas</span><span class="stat-val">3</span></div>
+                    <div class="node-stat"><span class="stat-label">Consenso</span><span class="stat-val">Raft</span></div>
+                </div>
+                <div class="node-heartbeat" id="hb-node3">
+                    <span class="hb-label">Heartbeat</span>
+                    <div class="hb-bars">
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                        <div class="hb-bar"></div><div class="hb-bar"></div><div class="hb-bar"></div>
+                    </div>
+                </div>
                 <div class="kv" id="kv3"></div>
             </div>
-
-        </div>
-
-        <div class="nuclear-container">
-
-            <div id="safety-cover" class="safety-cover" onclick="abrirTapa()">
-                <div class="warning-stripes"></div>
-            </div>
-
-            <button id="nuclear-button" class="nuclear-button" onclick="fallarNodo()" disabled>
-                SIMULAR<br>FALLO
-            </button>
-
 
         </div>
 

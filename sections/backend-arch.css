@@ -1,0 +1,398 @@
+/* ── Backend Architecture Section ─────────────────────────────────────────── */
+
+.backend-arch-section {
+    padding: 80px 40px;
+    background: #0d1117;
+    color: #e6edf3;
+}
+
+.backend-arch-title {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.backend-arch-sub {
+    text-align: center;
+    color: #8b949e;
+    font-size: 0.95rem;
+    margin-bottom: 48px;
+}
+
+/* ── 3 capas ── */
+.arch-layers {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.arch-layer {
+    border-radius: 12px;
+    padding: 20px;
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.arch-layer-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    text-align: center;
+}
+
+.arch-frontend {
+    border: 2px dashed #2da44e;
+    background: #0d1f17;
+}
+.arch-frontend .arch-layer-label { color: #3fb950; }
+
+.arch-backend {
+    border: 2px dashed #58a6ff;
+    background: #0d1a2e;
+    width: 260px;
+}
+.arch-backend .arch-layer-label { color: #79c0ff; }
+
+.arch-db {
+    border: 2px dashed #d4a72c;
+    background: #1f1a0d;
+    width: 280px;
+    flex-shrink: 0;
+}
+.arch-db .arch-layer-label { color: #e3b341; line-height: 1.4; }
+
+.arch-layer-desc {
+    font-size: 0.78rem;
+    color: #8b949e;
+    margin-top: 12px;
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* ── Flechas entre capas ── */
+.arch-arrow-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 8px;
+    min-width: 70px;
+    padding-top: 60px;
+}
+
+.arch-arrow-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #8b949e;
+    text-align: center;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+.arch-arrow-label span { font-weight: 400; text-transform: none; color: #6e7681; }
+
+.arch-arrow {
+    font-size: 2rem;
+    color: #30363d;
+}
+
+/* ── Browser mock ── */
+.arch-browser {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #30363d;
+    background: #161b22;
+}
+.arch-browser-bar {
+    background: #21262d;
+    padding: 6px 10px;
+    display: flex;
+    gap: 5px;
+}
+.arch-browser-bar span {
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    background: #30363d;
+    display: block;
+}
+.arch-browser-body {
+    padding: 16px;
+    text-align: center;
+}
+.arch-brand {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #00c896;
+    margin-bottom: 10px;
+}
+.arch-fake-btn {
+    background: #2da44e;
+    color: white;
+    border: none;
+    padding: 7px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: default;
+}
+
+/* ── Routes box ── */
+.arch-routes {
+    background: #161b22;
+    border-radius: 8px;
+    border: 1px solid #30363d;
+    padding: 12px;
+}
+.arch-route-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #8b949e;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+.arch-route {
+    font-size: 0.72rem;
+    padding: 3px 0;
+    color: #c9d1d9;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+.arch-route em {
+    color: #6e7681;
+    font-style: normal;
+}
+.arch-route.muted { color: #6e7681; }
+
+.method {
+    font-size: 0.62rem;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+.method.post { background: #1f3d1f; color: #3fb950; }
+.method.get  { background: #1a2f4a; color: #58a6ff; }
+
+/* ── DB nodes list ── */
+.arch-nodes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.arch-node-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 0.78rem;
+}
+
+.arch-node-row span {
+    font-weight: 700;
+    color: #c9d1d9;
+    flex: 1;
+}
+
+.arch-node-row em {
+    font-style: normal;
+    font-size: 0.7rem;
+    color: #e3b341;
+    font-family: monospace;
+}
+
+/* ── DB nodes ── */
+.arch-raft-label {
+    font-size: 0.65rem;
+    color: #8b949e;
+    text-align: center;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* ── Respuesta ── */
+.arch-response-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    justify-content: center;
+    margin: 16px 0 40px;
+    max-width: 860px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.arch-response-end {
+    font-size: 1.3rem;
+    color: #79c0ff;
+    flex-shrink: 0;
+    padding: 0 4px;
+}
+.arch-response-arrow {
+    flex: 1;
+    background: linear-gradient(90deg, #161b22, #1a2236, #161b22);
+    border-top: 2px dashed #30363d;
+    border-bottom: 2px dashed #30363d;
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #79c0ff;
+    letter-spacing: 1px;
+}
+.arch-response-desc {
+    display: none;
+}
+
+/* ── Bottom (steps + fallback) ── */
+.arch-bottom {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.arch-steps-box {
+    flex: 2;
+    min-width: 280px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.arch-fallback-box {
+    flex: 1;
+    min-width: 220px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.arch-steps-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #58a6ff;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 16px;
+}
+
+.arch-steps {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.arch-step {
+    background: #0d1117;
+    border: 1px solid #21262d;
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    flex: 1;
+    min-width: 80px;
+}
+.arch-step-num {
+    width: 20px; height: 20px;
+    background: #58a6ff;
+    color: #0d1117;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 6px;
+}
+.arch-step-icon { font-size: 1.3rem; margin-bottom: 4px; }
+.arch-step-name { font-size: 0.65rem; font-weight: 700; color: #c9d1d9; margin-bottom: 4px; }
+.arch-step-desc { font-size: 0.62rem; color: #6e7681; line-height: 1.4; }
+
+/* ── Fallback ── */
+.arch-fallback-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #21262d;
+}
+.arch-fallback-item:last-of-type { border-bottom: none; }
+
+.arch-fallback-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: #21262d;
+    color: #c9d1d9;
+    font-size: 0.72rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.arch-fallback-text { font-size: 0.78rem; color: #8b949e; flex: 1; line-height: 1.4; }
+.arch-fallback-ok   { color: #3fb950; font-size: 1.1rem; }
+.arch-fallback-warn { color: #d4a72c; font-size: 1.1rem; }
+
+.arch-fallback-note {
+    margin-top: 14px;
+    background: #1f2b1f;
+    border: 1px solid #2da44e;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    color: #3fb950;
+    line-height: 1.5;
+}
+
+/* ── Info row ── */
+.arch-info-row {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.arch-info-card {
+    flex: 1;
+    min-width: 200px;
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    padding: 18px;
+}
+.arch-info-tech { border-color: #d4a72c; }
+
+.arch-info-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #58a6ff;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+.arch-info-tech .arch-info-title { color: #e3b341; }
+
+.arch-info-card p,
+.arch-info-card li {
+    font-size: 0.82rem;
+    color: #8b949e;
+    line-height: 1.6;
+}
+.arch-info-card ul {
+    padding-left: 16px;
+    margin: 0;
+}

@@ -159,6 +159,45 @@ function logRaft(texto, clase = "") {
 }
 
 /* ===== Simular fallo de nodo (visual + election) — EPIC VERSION ===== */
+function lanzarScreamer() {
+    const screamer = document.createElement("div");
+    screamer.id = "screamer-overlay";
+    screamer.style.cssText = `
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+    `;
+    const img = document.createElement("img");
+    img.src = "img/cucaracha_fuego.png";
+    img.style.cssText = `
+        width: 100vw;
+        height: 100vh;
+        object-fit: cover;
+        filter: drop-shadow(0 0 80px red) brightness(1.4);
+    `;
+    screamer.appendChild(img);
+    document.body.appendChild(screamer);
+
+    // Parpadeo rápido durante 2.5 segundos
+    let visible = true;
+    const interval = setInterval(() => {
+        visible = !visible;
+        screamer.style.opacity = visible ? "1" : "0";
+    }, 120);
+
+    setTimeout(() => {
+        clearInterval(interval);
+        screamer.style.transition = "opacity 0.4s";
+        screamer.style.opacity = "0";
+        setTimeout(() => screamer.remove(), 450);
+    }, 2500);
+}
+
 function fallarNodo() {
     const nodo1 = document.getElementById("node1");
     if (!nodo1) return;
@@ -180,6 +219,9 @@ function fallarNodo() {
 
         // Matar el nodo real en CockroachDB
         fetch(`${API_URL}/cluster/node/1/kill`, { method: 'POST' }).catch(() => {});
+
+        // ── SCREAMER — cucaracha parpadeando ──
+        lanzarScreamer();
 
         // ── SCREEN SHAKE ÉPICO ──
         document.body.classList.add("screen-shake-epic");
@@ -244,6 +286,41 @@ function fallarNodo() {
             nodo1.classList.add("node-dead", "node-burning", "node-meltdown");
             electricidadNodo(nodo1);
             fuegoContinuo(nodo1);
+
+            // Badge → DOWN inmediato
+            const badge = document.getElementById("badge-node1");
+            if (badge) { badge.textContent = "● DOWN"; badge.className = "node-badge dead"; }
+
+            // Heartbeat → flatline
+            const hbBars = nodo1.querySelectorAll(".hb-bar");
+            hbBars.forEach(bar => {
+                bar.style.animation = "none";
+                bar.style.height = "2px";
+                bar.style.opacity = "0.25";
+                bar.style.background = "#ff3b3b";
+                bar.style.boxShadow = "none";
+            });
+
+            // Stats → apagados
+            nodo1.querySelectorAll(".stat-val").forEach(el => {
+                el.style.color = "#ff3b3b";
+                el.style.opacity = "0.5";
+            });
+            nodo1.querySelectorAll(".node-stat").forEach(el => {
+                el.style.borderColor = "rgba(255,59,59,0.2)";
+            });
+
+            // Ranges → offline
+            nodo1.querySelectorAll(".range").forEach(r => {
+                r.classList.remove("leader");
+                r.style.borderColor = "rgba(255,59,59,0.3)";
+                r.style.color = "#ff3b3b";
+                r.style.opacity = "0.5";
+            });
+
+            // Latencia → N/A
+            const lat = document.getElementById("latency-node1");
+            if (lat) { lat.textContent = "⚠ Sin conexión"; lat.style.color = "#ff3b3b"; }
         }, 1200);
 
         setTimeout(() => logType("Range 3 pierde su líder"), 2400);
@@ -286,6 +363,34 @@ function reiniciarCluster() {
         r.innerText = i === 0 ? "Range 3 • Leader" : "Range 3 • Follower";
         if (i === 0) r.classList.add("leader");
     });
+
+    // Restaurar badge, heartbeat, stats y latencia del nodo 1
+    const badge1 = document.getElementById("badge-node1");
+    if (badge1) { badge1.textContent = "● LIVE"; badge1.className = "node-badge live"; }
+
+    if (nodo1) {
+        nodo1.querySelectorAll(".hb-bar").forEach(bar => {
+            bar.style.animation = "";
+            bar.style.height = "";
+            bar.style.opacity = "";
+            bar.style.background = "";
+            bar.style.boxShadow = "";
+        });
+        nodo1.querySelectorAll(".stat-val").forEach(el => {
+            el.style.color = "";
+            el.style.opacity = "";
+        });
+        nodo1.querySelectorAll(".node-stat").forEach(el => {
+            el.style.borderColor = "";
+        });
+        nodo1.querySelectorAll(".range").forEach(r => {
+            r.style.borderColor = "";
+            r.style.color = "";
+            r.style.opacity = "";
+        });
+        const lat = document.getElementById("latency-node1");
+        if (lat) { lat.textContent = "latencia base: 600 ms"; lat.style.color = ""; }
+    }
 
     // Re-habilitar botón nuclear
     const nuclearBtn = document.getElementById("nuclear-button");
@@ -766,11 +871,14 @@ window.addEventListener("DOMContentLoaded", () => {
                 if (!data.nodes) return;
                 data.nodes.forEach(node => {
                     const el = document.getElementById(`node${node.id}`);
+                    const badge = document.getElementById(`badge-node${node.id}`);
                     if (!el) return;
-                    if (!node.alive && !el.classList.contains("node-dead")) {
+                    if (!node.alive) {
                         el.classList.add("node-dead");
-                    } else if (node.alive && el.classList.contains("node-dead")) {
+                        if (badge) { badge.textContent = "● DOWN"; badge.className = "node-badge dead"; }
+                    } else {
                         el.classList.remove("node-dead");
+                        if (badge) { badge.textContent = "● LIVE"; badge.className = "node-badge live"; }
                     }
                 });
             })
